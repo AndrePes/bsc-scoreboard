@@ -1,0 +1,801 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ExcerciseResult Schmema",
+  "type": "object",
+  "properties": {
+    "LastShot": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "TimeStamp": {
+          "type": "string"
+        },
+        "Demo": {
+          "type": "boolean"
+        },
+        "Scores": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ShotNumber": {
+          "type": "number"
+        },
+        "DirectionArrow": {
+          "type": "string"
+        },
+        "XCoordinateInM": {
+          "type": "number"
+        },
+        "YCoordinateInM": {
+          "type": "number"
+        },
+        "RadiusInM": {
+          "type": "number"
+        },
+        "PhiInRad": {
+          "type": "number"
+        },
+        "Visible": {
+          "type": "boolean"
+        },
+        "CaliberInM": {
+          "type": "number"
+        },
+        "FiringDistanceInM": {
+          "type": "string"
+        },
+        "Drawable": {
+          "type": "boolean"
+        },
+        "VisualGroup": {
+          "type": "number"
+        },
+        "TargetIdent": {
+          "type": "number"
+        },
+        "TargetPictureId": {
+          "type": "string"
+        },
+        "Position": {
+          "type": "string"
+        },
+        "FrameHit": {
+          "type": "boolean"
+        },
+        "InnerTen": {
+          "type": "boolean"
+        },
+        "Miss": {
+          "type": "boolean"
+        },
+        "Velocity": {
+          "type": "number"
+        },
+        "Ricochet": {
+          "type": "boolean"
+        },
+        "SystemCreated": {
+          "type": "boolean"
+        },
+        "FireKind": {
+          "type": "string"
+        },
+        "ScoreObjects": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ScoreMethodId": {
+                "type": "string"
+              },
+              "Name": {
+                "type": "string"
+              },
+              "ScoreFormat": {
+                "type": "string"
+              },
+              "StringValue": {
+                "type": "string"
+              },
+              "Value": {
+                "type": "number"
+              },
+              "MaximumScore": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "ScoreMethodId",
+              "Name",
+              "ScoreFormat",
+              "StringValue",
+              "Value",
+              "MaximumScore"
+            ]
+          }
+        },
+        "RunningTargetMovement": {
+          "type": "string"
+        },
+        "RunningTargetSpeed": {
+          "type": "string"
+        },
+        "InTime": {
+          "type": "boolean"
+        },
+        "ElapsedTime": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "Id",
+        "TimeStamp",
+        "Demo",
+        "Scores",
+        "ShotNumber",
+        "DirectionArrow",
+        "XCoordinateInM",
+        "YCoordinateInM",
+        "RadiusInM",
+        "PhiInRad",
+        "Visible",
+        "CaliberInM",
+        "FiringDistanceInM",
+        "Drawable",
+        "VisualGroup",
+        "TargetIdent",
+        "TargetPictureId",
+        "Position",
+        "FrameHit",
+        "InnerTen",
+        "Miss",
+        "Velocity",
+        "Ricochet",
+        "SystemCreated",
+        "FireKind",
+        "ScoreObjects",
+        "RunningTargetMovement",
+        "RunningTargetSpeed",
+        "InTime",
+        "ElapsedTime"
+      ]
+    },
+    "Totals": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "DisplayTotalStrings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "Practices": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "PracticeName": {
+            "type": "string"
+          },
+          "Groups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "Shots": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "Id": {
+                        "type": "string"
+                      },
+                      "TimeStamp": {
+                        "type": "string"
+                      },
+                      "Demo": {
+                        "type": "boolean"
+                      },
+                      "Scores": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "ShotNumber": {
+                        "type": "number"
+                      },
+                      "DirectionArrow": {
+                        "type": "string"
+                      },
+                      "XCoordinateInM": {
+                        "type": "number"
+                      },
+                      "YCoordinateInM": {
+                        "type": "number"
+                      },
+                      "RadiusInM": {
+                        "type": "number"
+                      },
+                      "PhiInRad": {
+                        "type": "number"
+                      },
+                      "Visible": {
+                        "type": "boolean"
+                      },
+                      "CaliberInM": {
+                        "type": "number"
+                      },
+                      "FiringDistanceInM": {
+                        "type": "string"
+                      },
+                      "Drawable": {
+                        "type": "boolean"
+                      },
+                      "VisualGroup": {
+                        "type": "number"
+                      },
+                      "TargetIdent": {
+                        "type": "number"
+                      },
+                      "TargetPictureId": {
+                        "type": "string"
+                      },
+                      "Position": {
+                        "type": "string"
+                      },
+                      "FrameHit": {
+                        "type": "boolean"
+                      },
+                      "InnerTen": {
+                        "type": "boolean"
+                      },
+                      "Miss": {
+                        "type": "boolean"
+                      },
+                      "Velocity": {
+                        "type": "number"
+                      },
+                      "Ricochet": {
+                        "type": "boolean"
+                      },
+                      "SystemCreated": {
+                        "type": "boolean"
+                      },
+                      "FireKind": {
+                        "type": "string"
+                      },
+                      "ScoreObjects": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "ScoreMethodId": {
+                              "type": "string"
+                            },
+                            "Name": {
+                              "type": "string"
+                            },
+                            "ScoreFormat": {
+                              "type": "string"
+                            },
+                            "StringValue": {
+                              "type": "string"
+                            },
+                            "Value": {
+                              "type": "number"
+                            },
+                            "MaximumScore": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "ScoreMethodId",
+                            "Name",
+                            "ScoreFormat",
+                            "StringValue",
+                            "Value",
+                            "MaximumScore"
+                          ]
+                        }
+                      },
+                      "RunningTargetMovement": {
+                        "type": "string"
+                      },
+                      "RunningTargetSpeed": {
+                        "type": "string"
+                      },
+                      "InTime": {
+                        "type": "boolean"
+                      },
+                      "ElapsedTime": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "Id",
+                      "TimeStamp",
+                      "Demo",
+                      "Scores",
+                      "ShotNumber",
+                      "DirectionArrow",
+                      "XCoordinateInM",
+                      "YCoordinateInM",
+                      "RadiusInM",
+                      "PhiInRad",
+                      "Visible",
+                      "CaliberInM",
+                      "FiringDistanceInM",
+                      "Drawable",
+                      "VisualGroup",
+                      "TargetIdent",
+                      "TargetPictureId",
+                      "Position",
+                      "FrameHit",
+                      "InnerTen",
+                      "Miss",
+                      "Velocity",
+                      "Ricochet",
+                      "SystemCreated",
+                      "FireKind",
+                      "ScoreObjects",
+                      "RunningTargetMovement",
+                      "RunningTargetSpeed",
+                      "InTime",
+                      "ElapsedTime"
+                    ]
+                  }
+                },
+                "Totals": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "DisplayTotalStrings": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "FireKind": {
+                  "type": "number"
+                },
+                "ShowIndex": {
+                  "type": "number"
+                },
+                "TargetIdent": {
+                  "type": "number"
+                },
+                "TargetPictureId": {
+                  "type": "string"
+                },
+                "ParameterResults": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "Teilers": {
+                        "type": "array",
+                        "items": {
+                          "type": "number"
+                        }
+                      },
+                      "ParameterResultType": {
+                        "type": "string"
+                      },
+                      "ResultValid": {
+                        "type": "boolean"
+                      },
+                      "ResultDataType": {
+                        "type": "string"
+                      },
+                      "ProductVersion": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "Teilers",
+                      "ParameterResultType",
+                      "ResultValid",
+                      "ResultDataType",
+                      "ProductVersion"
+                    ]
+                  }
+                },
+                "InfoLayerContributorMetaDataList": {
+                  "type": "array",
+                  "items": {}
+                }
+              },
+              "required": [
+                "Shots",
+                "Totals",
+                "DisplayTotalStrings",
+                "FireKind",
+                "ShowIndex",
+                "TargetIdent",
+                "TargetPictureId",
+                "ParameterResults",
+                "InfoLayerContributorMetaDataList"
+              ]
+            }
+          },
+          "Totals": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "DisplayTotalStrings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ParameterResults": {
+            "type": "array",
+            "items": {}
+          }
+        },
+        "required": [
+          "PracticeName",
+          "Groups",
+          "Totals",
+          "DisplayTotalStrings",
+          "ParameterResults"
+        ]
+      }
+    },
+    "NrOfInnerTens": {
+      "type": "number"
+    },
+    "ParameterResults": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "Teilers": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "ParameterResultType": {
+            "type": "string"
+          },
+          "ResultValid": {
+            "type": "boolean"
+          },
+          "ResultDataType": {
+            "type": "string"
+          },
+          "ProductVersion": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "Teilers",
+          "ParameterResultType",
+          "ResultValid",
+          "ResultDataType",
+          "ProductVersion"
+        ]
+      }
+    },
+    "IsLegacy": {
+      "type": "boolean"
+    },
+    "LegacyFirerInformation": {
+      "type": "object",
+      "properties": {
+        "FirerId": {
+          "type": "number"
+        },
+        "DisplayName": {},
+        "DisplayNation": {}
+      },
+      "required": [
+        "FirerId",
+        "DisplayName",
+        "DisplayNation"
+      ]
+    },
+    "LegacyShootLogEventStartTime": {
+      "type": "string"
+    },
+    "Id": {
+      "type": "string"
+    },
+    "UserSessionInformation": {
+      "type": "object",
+      "properties": {
+        "SessionId": {
+          "type": "string"
+        },
+        "ShootingSportsCloudSession": {
+          "type": "boolean"
+        },
+        "UserData": {
+          "type": "object",
+          "properties": {
+            "ShootingSportsCloudId": {
+              "type": "string"
+            },
+            "MemberId": {
+              "type": "string"
+            },
+            "OrganizationId": {
+              "type": "string"
+            },
+            "IsDefaultUser": {
+              "type": "boolean"
+            },
+            "UserPreferredLanguage": {
+              "type": "string"
+            },
+            "UserDisplayId": {
+              "type": "string"
+            },
+            "Team": {
+              "type": "string"
+            },
+            "Name": {
+              "type": "string"
+            },
+            "FirstName": {
+              "type": "string"
+            },
+            "DisplayName": {
+              "type": "string"
+            },
+            "Club": {
+              "type": "string"
+            },
+            "Class": {
+              "type": "string"
+            },
+            "UserGroup": {
+              "type": "string"
+            },
+            "Organization": {
+              "type": "string"
+            },
+            "OrganizationCode": {
+              "type": "string"
+            },
+            "OrganizationPicture": {},
+            "NationISO": {
+              "type": "string"
+            },
+            "NationIOC": {
+              "type": "string"
+            },
+            "Age": {},
+            "Gender": {},
+            "GenderTranslated": {},
+            "DateOfBirth": {},
+            "DisplayNation": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "ShootingSportsCloudId",
+            "MemberId",
+            "OrganizationId",
+            "IsDefaultUser",
+            "UserPreferredLanguage",
+            "UserDisplayId",
+            "Team",
+            "Name",
+            "FirstName",
+            "DisplayName",
+            "Club",
+            "Class",
+            "UserGroup",
+            "Organization",
+            "OrganizationCode",
+            "OrganizationPicture",
+            "NationISO",
+            "NationIOC",
+            "Age",
+            "Gender",
+            "GenderTranslated",
+            "DateOfBirth",
+            "DisplayNation"
+          ]
+        }
+      },
+      "required": [
+        "SessionId",
+        "ShootingSportsCloudSession",
+        "UserData"
+      ]
+    },
+    "Serial": {
+      "type": "number"
+    },
+    "RangeId": {
+      "type": "string"
+    },
+    "RangeName": {
+      "type": "string"
+    },
+    "LanguageIdentifier": {
+      "type": "string"
+    },
+    "TimeZone": {
+      "type": "string"
+    },
+    "ExerciseAssignmentId": {
+      "type": "string"
+    },
+    "Suspendable": {
+      "type": "boolean"
+    },
+    "ExerciseStart": {
+      "type": "string"
+    },
+    "Rank": {
+      "type": "number"
+    },
+    "NrOfCompetitionShots": {
+      "type": "number"
+    },
+    "ExerciseEmpty": {
+      "type": "boolean"
+    },
+    "ExerciseProgress": {
+      "type": "string"
+    },
+    "ExerciseSpecialEvents": {
+      "type": "array",
+      "items": {}
+    },
+    "CurrentExerciseState": {
+      "type": "string"
+    },
+    "FiringPoint": {
+      "type": "number"
+    },
+    "ExerciseName": {
+      "type": "string"
+    },
+    "TotalString": {
+      "type": "string"
+    },
+    "FaceSelector": {
+      "type": "string"
+    },
+    "TimerViewData": {
+      "type": "object",
+      "properties": {
+        "State": {
+          "type": "number"
+        },
+        "StartTime": {
+          "type": "string"
+        },
+        "TotalTimeInS": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "State",
+        "StartTime",
+        "TotalTimeInS"
+      ]
+    },
+    "FaceSpecificData": {
+      "type": "string"
+    },
+    "WeaponId": {
+      "type": "string"
+    },
+    "WeaponName": {
+      "type": "string"
+    },
+    "Comment": {
+      "type": "string"
+    },
+    "UserSpecificData": {
+      "type": "object",
+      "properties": {
+        "WeaponNumber": {
+          "type": "string"
+        },
+        "AmmunitionLot": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "WeaponNumber",
+        "AmmunitionLot"
+      ]
+    },
+    "PreExerciseStepResults": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    },
+    "PostExerciseStepResults": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    },
+    "LastProcessedExerciseStepsList": {
+      "type": "string"
+    },
+    "LastProcessedExerciseStepsIndex": {
+      "type": "number"
+    },
+    "PrintStreamData": {
+      "type": "string"
+    },
+    "BackupDataString": {
+      "type": "string"
+    },
+    "ComponentDefinitionId": {
+      "type": "string"
+    },
+    "ResultDataType": {
+      "type": "string"
+    },
+    "ProductVersion": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "LastShot",
+    "Totals",
+    "DisplayTotalStrings",
+    "Practices",
+    "NrOfInnerTens",
+    "ParameterResults",
+    "IsLegacy",
+    "LegacyFirerInformation",
+    "LegacyShootLogEventStartTime",
+    "Id",
+    "UserSessionInformation",
+    "Serial",
+    "RangeId",
+    "RangeName",
+    "LanguageIdentifier",
+    "TimeZone",
+    "ExerciseAssignmentId",
+    "Suspendable",
+    "ExerciseStart",
+    "Rank",
+    "NrOfCompetitionShots",
+    "ExerciseEmpty",
+    "ExerciseProgress",
+    "ExerciseSpecialEvents",
+    "CurrentExerciseState",
+    "FiringPoint",
+    "ExerciseName",
+    "TotalString",
+    "FaceSelector",
+    "TimerViewData",
+    "FaceSpecificData",
+    "WeaponId",
+    "WeaponName",
+    "Comment",
+    "UserSpecificData",
+    "PreExerciseStepResults",
+    "PostExerciseStepResults",
+    "LastProcessedExerciseStepsList",
+    "LastProcessedExerciseStepsIndex",
+    "PrintStreamData",
+    "BackupDataString",
+    "ComponentDefinitionId",
+    "ResultDataType",
+    "ProductVersion"
+  ]
+}
