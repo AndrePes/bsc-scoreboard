@@ -1,0 +1,8 @@
+{
+  "apiBaseUrl": "",
+  "dates": [],
+  "refreshIntervalSec": 60,
+  "scrollSpeedPxPerSec": 24,
+  "scrollPauseSec": 3,
+  "visibleRows": 6
+}

@@ -2,12 +2,14 @@
   "name": "bsc-scoreboard",
   "version": "1.0.0",
   "private": true,
-  "description": "BSC ScoreBoard – Monorepo (Server + Client)",
+  "description": "BSC ScoreBoard – Monorepo (Server + Client + Live-Board)",
   "scripts": {
-    "install:all": "npm --prefix server install && npm --prefix client install",
+    "install:all": "npm --prefix server install && npm --prefix client install && npm --prefix live_board install",
     "dev:server": "npm --prefix server run dev",
     "dev:client": "npm --prefix client run dev",
+    "dev:live": "npm --prefix live_board run dev",
     "build:server": "npm --prefix server run build",
-    "build:client": "npm --prefix client run build"
+    "build:client": "npm --prefix client run build",
+    "build:live": "npm --prefix live_board run build"
   }
 }

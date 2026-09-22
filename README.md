@@ -6,8 +6,9 @@ Single-Page-Application zur Anzeige von Schießwettkampf-Ergebnissen.
 
 ```
 .
-├── client/   # BSC ScoreBoard (React + Vite + TypeScript + Tailwind)
-└── server/   # BSC ScoreBoard Server (Express + TypeScript) – REST API
+├── client/       # BSC ScoreBoard (React + Vite + TypeScript + Tailwind)
+├── live_board/   # Live-Board für große Monitore (gleicher Stack wie client)
+└── server/       # BSC ScoreBoard Server (Express + TypeScript) – REST API
 ```
 
 Der Server überwacht einen Quell-Ordner, in den die Schießanlage nach jedem
@@ -38,15 +39,20 @@ npm run dev:server
 
 # Terminal 2 – Frontend (Port 5173, proxied /api → :4000)
 npm run dev:client
+
+# optional: Live-Board (Port 5174, proxied /api → :4000)
+npm run dev:live
 ```
 
-Anschließend `http://localhost:5173` im Browser öffnen.
+Anschließend `http://localhost:5173` (Client) bzw. `http://localhost:5174`
+(Live-Board) im Browser öffnen.
 
 ## Production-Build
 
 ```bash
 npm run build:server
 npm run build:client
+npm run build:live
 ```
 
 ## Konfiguration: Server (Quell-Ordner der Daten)
@@ -111,6 +117,42 @@ d. h. Änderungen erfordern **keinen** neuen Build.
 Der Server erlaubt CORS für alle Origins, sodass ein getrennter Betrieb ohne
 weitere Anpassungen funktioniert. Der Server-Port wird über die Umgebungsvariable
 `PORT` gesetzt (Standard `4000`).
+
+## Live-Board (`live_board/`)
+
+Vollbild-Ansicht für Monitore über der Schießbahn. Oberes Drittel: fünf Kacheln
+mit den fünf besten Gesamt-Teilern der Veranstaltung. Unterer Bereich: Tabelle
+aller weiteren Teilnehmer ab Rang 6 mit denselben Werten wie im Client (bester
+Teiler, 2. Teiler, Summe, Anzahl). Die Tabelle zeigt eine feste Zeilenanzahl,
+scrollt langsam nach unten und springt am Ende wieder an den Anfang. Die Daten
+werden periodisch neu geladen; die Uhrzeit der letzten Aktualisierung steht
+oben rechts.
+
+Konfiguration: `live_board/public/config.json` (nach dem Build:
+`live_board/dist/config.json`, zur Laufzeit geladen, kein Rebuild nötig):
+
+```json
+{
+  "apiBaseUrl": "",
+  "dates": [],
+  "refreshIntervalSec": 60,
+  "scrollSpeedPxPerSec": 24,
+  "scrollPauseSec": 3,
+  "visibleRows": 6
+}
+```
+
+| Schlüssel | Bedeutung |
+| --- | --- |
+| `apiBaseUrl` | Adresse der Server-App, z. B. `"http://192.168.1.50:4000"`. Leer = gleicher Host. |
+| `dates` | Anzuzeigende Tage als `["YYYY-MM-DD", ...]`. `[]` = alle Tage. Bei mehreren Tagen wird die Rangliste im Live-Board zusammengeführt. |
+| `refreshIntervalSec` | Aktualisierungsintervall der Daten in Sekunden. |
+| `scrollSpeedPxPerSec` | Scrollgeschwindigkeit der Tabelle in Pixel pro Sekunde. |
+| `scrollPauseSec` | Pause am Tabellenanfang und -ende in Sekunden. |
+| `visibleRows` | Anzahl gleichzeitig sichtbarer Tabellenzeilen. |
+
+Für den Monitor den Browser im Vollbild-/Kiosk-Modus starten, z. B.
+`chrome --kiosk http://<host>/`.
 
 ## REST API
 
