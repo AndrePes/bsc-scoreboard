@@ -185,7 +185,7 @@ export function CenterColumn({
                           {p.firstName} {p.lastName}
                         </span>
                         <span className="block truncate text-xs text-slate-500">
-                          {p.club ?? '–'} · {p.totalShots} Schüsse
+                          {p.club ?? '–'} · {p.teilerCount} Teiler
                         </span>
                       </span>
                       <span className="text-right text-sm font-semibold text-slate-800">

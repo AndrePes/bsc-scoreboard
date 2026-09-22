@@ -10,11 +10,15 @@ Single-Page-Application zur Anzeige von Schießwettkampf-Ergebnissen.
 └── server/   # BSC ScoreBoard Server (Express + TypeScript) – REST API
 ```
 
-Der Server liest eine interne Datenstruktur (basierend auf dem `schema.json`) und stellt sie als JSON unter `/api` bereit. Das Frontend konsumiert diese API und rendert das 3-Spalten-Layout.
+Der Server überwacht einen Quell-Ordner, in den die Schießanlage nach jedem
+Durchgang eine `*_ExerciseResultData.json` schreibt (Format siehe `schema.json`),
+liest daraus die Teilnehmer und ihre besten Teiler und stellt die Auswertung als
+JSON unter `/api` bereit. Das Frontend konsumiert diese API und rendert das
+3-Spalten-Layout.
 
 ## Voraussetzungen
 
-- Node.js 18+
+- Node.js 20.19+
 - npm 9+
 
 ## Installation
@@ -45,6 +49,48 @@ npm run build:server
 npm run build:client
 ```
 
+## Konfiguration: Server (Quell-Ordner der Daten)
+
+Der Server liest beim Start `server/config.json`:
+
+```json
+{
+  "dataDir": "./data/raw",
+  "usePolling": false,
+  "pollingIntervalMs": 1000,
+  "eventName": "BSC ScoreBoard",
+  "rangeName": "Schießanlage BSC"
+}
+```
+
+| Schlüssel | Bedeutung |
+| --- | --- |
+| `dataDir` | Quell-Ordner mit den JSON-Dateien der Schießanlage. Relative Pfade beziehen sich auf `server/`. |
+| `usePolling` | `true`, wenn der Ordner auf einem Netzlaufwerk (SMB/NFS) liegt, auf dem keine Dateisystem-Events ankommen. |
+| `pollingIntervalMs` | Abfrageintervall bei `usePolling`. |
+| `eventName`, `rangeName` | Anzeigenamen im Client. |
+
+Umgebungsvariablen überschreiben die Datei: `DATA_DIR` (Quell-Ordner),
+`CONFIG_PATH` (alternative config.json), `PORT` (HTTP-Port, Standard `4000`).
+
+**File-Monitor:** Beim Start werden alle vorhandenen `*.json`-Dateien im
+Quell-Ordner geladen. Danach werden neu erstellte, geänderte und gelöschte
+Dateien automatisch übernommen; die API liefert sofort die aktuellen Daten.
+Dateien ohne die benötigten Felder werden mit einer Warnung im Log übersprungen.
+
+Aus jeder Datei werden verwendet:
+
+| JSON-Pfad | Bedeutung |
+| --- | --- |
+| `UserSessionInformation.UserData.MemberId` | Teilnehmer-Nummer (ID) |
+| `UserSessionInformation.UserData.FirstName` | Vorname |
+| `UserSessionInformation.UserData.Name` | Nachname |
+| `ParameterResults[].Teilers` | die 3 besten Teiler (Meter, werden in 1/100 mm umgerechnet) |
+| `LastShot.TimeStamp` | Zeitstempel; das Datum bestimmt den Veranstaltungstag |
+| `Id` | Durchgangs-ID zur Duplikat-Erkennung |
+
+Die Veranstaltungstage ergeben sich aus den vorkommenden Daten der Zeitstempel.
+
 ## Konfiguration: Server-Adresse des Clients
 
 Der Client liest beim Start die Datei `client/public/config.json`
@@ -74,10 +120,11 @@ weitere Anpassungen funktioniert. Der Server-Port wird über die Umgebungsvariab
 | `GET` | `/api/event/days/:date/participants` | Tagesstatistik + sortierte Teilnehmerliste |
 | `GET` | `/api/event/all/participants` | Statistik + Teilnehmerliste über alle Tage |
 | `GET` | `/api/participants/:id?date=YYYY-MM-DD` | Detailstatistik eines Teilnehmers |
-| `GET` | `/api/health` | Health-Check |
+| `GET` | `/api/health` | Health-Check (inkl. `dataDir`, Anzahl geladener Dateien/Teilnehmer) |
 
-Die Teilnehmerlisten enthalten pro Teilnehmer `bestTeiler`, `secondBestTeiler`
-und `teilerSum` (Summe aus bestem und zweitbestem Teiler). Die Top-3-Werte in
+Die Teilnehmerlisten enthalten pro Teilnehmer `bestTeiler`, `secondBestTeiler`,
+`teilerSum` (Summe aus bestem und zweitbestem Teiler) und `teilerCount`
+(Anzahl gewerteter Teiler-Werte). Die Top-3-Werte in
 `stats` (`bestTeiler`, `secondBestTeiler`, `thirdBestTeiler`) sind Objekte mit
 `teiler`, `participantId`, `firstName`, `lastName`.
 

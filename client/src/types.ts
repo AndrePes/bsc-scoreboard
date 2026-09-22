@@ -20,7 +20,8 @@ export interface ParticipantListEntry {
   secondBestTeiler: number | null;
   /** Summe aus bestem und zweitbestem Teiler, null wenn kein zweiter Schuss. */
   teilerSum: number | null;
-  totalShots: number;
+  /** Anzahl gewerteter Teiler-Werte. */
+  teilerCount: number;
 }
 
 /** Ein Top-Teiler des Tages inkl. Schütze. */
@@ -46,7 +47,7 @@ export interface DayParticipantsResponse {
 
 export interface StatPair {
   bestTeiler: number | null;
-  shotCount: number;
+  teilerCount: number;
 }
 
 export interface ParticipantDetail {

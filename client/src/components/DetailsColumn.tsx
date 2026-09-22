@@ -113,16 +113,16 @@ export function DetailsColumn({
                 value: fmt(data.selectedDayStats.bestTeiler),
               },
               {
-                label: 'Anzahl abgegebener Schüsse (Ausgewählter Tag)',
-                value: String(data.selectedDayStats.shotCount),
+                label: 'Anzahl gewerteter Teiler (Ausgewählter Tag)',
+                value: String(data.selectedDayStats.teilerCount),
               },
               {
                 label: 'Bester Schuss/Teiler (Alle Tage)',
                 value: fmt(data.allDaysStats.bestTeiler),
               },
               {
-                label: 'Anzahl abgegebener Schüsse (Alle Tage)',
-                value: String(data.allDaysStats.shotCount),
+                label: 'Anzahl gewerteter Teiler (Alle Tage)',
+                value: String(data.allDaysStats.teilerCount),
               },
             ]}
           />

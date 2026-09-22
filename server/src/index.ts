@@ -1,7 +1,12 @@
 import express from 'express';
 import cors from 'cors';
-import { eventData } from './data.js';
-import type { EventDay, Participant, Shot } from './types.js';
+import { loadConfig } from './config.js';
+import { DataStore } from './store.js';
+import { startFileMonitor } from './watcher.js';
+import type { EventDay, Participant, TeilerResult } from './types.js';
+
+const config = loadConfig();
+const store = new DataStore(config.eventName, config.rangeName);
 
 const app = express();
 const PORT = Number(process.env.PORT ?? 4000);
@@ -16,11 +21,12 @@ interface ParticipantStats {
   club?: string;
   rank: number;
   bestTeiler: number;
-  /** Zweitbester Teiler des Teilnehmers, null bei nur einem Schuss. */
+  /** Zweitbester Teiler des Teilnehmers, null bei nur einem Wert. */
   secondBestTeiler: number | null;
-  /** Summe aus bestem und zweitbestem Teiler, null wenn kein zweiter Schuss. */
+  /** Summe aus bestem und zweitbestem Teiler, null wenn kein zweiter Wert. */
   teilerSum: number | null;
-  totalShots: number;
+  /** Anzahl gewerteter Teiler-Werte. */
+  teilerCount: number;
 }
 
 /** Ein Top-Teiler des Tages inkl. Schütze. */
@@ -31,38 +37,42 @@ interface TopTeiler {
   lastName: string;
 }
 
-function shotsForDay(p: Participant, day: string | null): Shot[] {
-  if (!day) return p.shotsByDay ? Object.values(p.shotsByDay).flat() : [];
-  return p.shotsByDay[day] ?? [];
-}
-
-function computeBestTeiler(shots: Shot[]): number {
-  if (shots.length === 0) return Number.POSITIVE_INFINITY;
-  return Math.min(...shots.map((s) => s.teiler));
+function computeBestTeiler(results: TeilerResult[]): number {
+  if (results.length === 0) return Number.POSITIVE_INFINITY;
+  return Math.min(...results.map((r) => r.teiler));
 }
 
 /** Teiler aufsteigend sortiert (niedriger = besser). */
-function sortedTeilers(shots: Shot[]): number[] {
-  return shots.map((s) => s.teiler).sort((a, b) => a - b);
+function sortedTeilers(results: TeilerResult[]): number[] {
+  return results.map((r) => r.teiler).sort((a, b) => a - b);
+}
+
+function allTeilers(p: Participant): TeilerResult[] {
+  return Object.values(p.teilersByDay).flat();
 }
 
 app.get('/api/event', (_req, res) => {
+  const data = store.getEventData();
   res.json({
-    eventName: eventData.eventName,
-    rangeName: eventData.rangeName,
-    days: eventData.days,
+    eventName: data.eventName,
+    rangeName: data.rangeName,
+    days: data.days,
   });
 });
 
-function buildDayResponse(dayShotsLookup: (p: Participant) => Shot[], day: EventDay | null) {
-  const participantsWithShots = eventData.participants
-    .map((p) => ({ p, shots: dayShotsLookup(p) }))
-    .filter((entry) => entry.shots.length > 0);
+function buildDayResponse(
+  lookup: (p: Participant) => TeilerResult[],
+  day: EventDay | null,
+) {
+  const participantsWithResults = store
+    .getEventData()
+    .participants.map((p) => ({ p, results: lookup(p) }))
+    .filter((entry) => entry.results.length > 0);
 
-  const stats: ParticipantStats[] = participantsWithShots
-    .map(({ p, shots }) => {
-      const teilers = sortedTeilers(shots);
-      const bestTeiler = computeBestTeiler(shots);
+  const stats: ParticipantStats[] = participantsWithResults
+    .map(({ p, results }) => {
+      const teilers = sortedTeilers(results);
+      const bestTeiler = computeBestTeiler(results);
       const secondBestTeiler = teilers[1] ?? null;
       return {
         id: p.id,
@@ -76,17 +86,17 @@ function buildDayResponse(dayShotsLookup: (p: Participant) => Shot[], day: Event
           secondBestTeiler === null
             ? null
             : Math.round((bestTeiler + secondBestTeiler) * 100) / 100,
-        totalShots: shots.length,
+        teilerCount: results.length,
       };
     })
     .sort((a, b) => a.bestTeiler - b.bestTeiler)
     .map((s, idx) => ({ ...s, rank: idx + 1 }));
 
-  // Die drei besten Einzelschüsse des Tages über alle Teilnehmer, inkl. Schütze.
-  const top3: TopTeiler[] = participantsWithShots
-    .flatMap(({ p, shots }) =>
-      shots.map((s) => ({
-        teiler: s.teiler,
+  // Die drei besten Teiler des Tages über alle Teilnehmer, inkl. Schütze.
+  const top3: TopTeiler[] = participantsWithResults
+    .flatMap(({ p, results }) =>
+      results.map((r) => ({
+        teiler: r.teiler,
         participantId: p.id,
         firstName: p.firstName,
         lastName: p.lastName,
@@ -109,40 +119,39 @@ function buildDayResponse(dayShotsLookup: (p: Participant) => Shot[], day: Event
 
 app.get('/api/event/days/:date/participants', (req, res) => {
   const date = req.params.date;
-  const day = eventData.days.find((d) => d.date === date);
+  const day = store.getEventData().days.find((d) => d.date === date);
   if (!day) {
     return res.status(404).json({ error: 'Day not found' });
   }
-  res.json(buildDayResponse((p) => p.shotsByDay[date] ?? [], day));
+  res.json(buildDayResponse((p) => p.teilersByDay[date] ?? [], day));
 });
 
 app.get('/api/event/all/participants', (_req, res) => {
   const allDays: EventDay = { date: 'all', label: 'Alle Tage' };
-  res.json(
-    buildDayResponse((p) => Object.values(p.shotsByDay).flat(), allDays),
-  );
+  res.json(buildDayResponse(allTeilers, allDays));
 });
 
 app.get('/api/participants/:id', (req, res) => {
   const id = req.params.id;
   const date = (req.query.date as string | undefined) ?? null;
-  const participant = eventData.participants.find((p) => p.id === id);
+  const participant = store
+    .getEventData()
+    .participants.find((p) => p.id === id);
   if (!participant) {
     return res.status(404).json({ error: 'Participant not found' });
   }
 
-  const allShots: Shot[] = Object.values(participant.shotsByDay).flat();
-  const dayShots: Shot[] = date ? participant.shotsByDay[date] ?? [] : [];
+  const dayResults: TeilerResult[] = date
+    ? participant.teilersByDay[date] ?? []
+    : [];
 
-  function stats(shots: Shot[]) {
-    if (shots.length === 0) {
-      return { bestTeiler: null, worstTeiler: null, shotCount: 0 };
+  function stats(results: TeilerResult[]) {
+    if (results.length === 0) {
+      return { bestTeiler: null, teilerCount: 0 };
     }
-    const teilers = shots.map((s) => s.teiler);
     return {
-      bestTeiler: Math.min(...teilers),
-      worstTeiler: Math.max(...teilers),
-      shotCount: shots.length,
+      bestTeiler: computeBestTeiler(results),
+      teilerCount: results.length,
     };
   }
 
@@ -152,15 +161,28 @@ app.get('/api/participants/:id', (req, res) => {
     lastName: participant.lastName,
     club: participant.club,
     selectedDay: date,
-    selectedDayStats: stats(dayShots),
-    allDaysStats: stats(allShots),
+    selectedDayStats: stats(dayResults),
+    allDaysStats: stats(allTeilers(participant)),
   });
 });
 
 app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok' });
+  res.json({
+    status: 'ok',
+    dataDir: config.dataDir,
+    files: store.fileCount,
+    participants: store.getEventData().participants.length,
+  });
 });
 
-app.listen(PORT, () => {
-  console.log(`BSC ScoreBoard Server listening on http://localhost:${PORT}`);
+async function main() {
+  await startFileMonitor(config, store);
+  app.listen(PORT, () => {
+    console.log(`BSC ScoreBoard Server listening on http://localhost:${PORT}`);
+  });
+}
+
+main().catch((err) => {
+  console.error('Server konnte nicht gestartet werden:', err);
+  process.exit(1);
 });

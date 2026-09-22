@@ -1,0 +1,916 @@
+{
+    "LastShot": {
+        "Id": "0e35e8d4-57fc-757c-cd19-09535c665d25",
+        "TimeStamp": "2026-09-04T18:43:35.819+02:00",
+        "Demo": false,
+        "Scores": [
+            "10.1"
+        ],
+        "ShotNumber": 10,
+        "DirectionArrow": "←",
+        "XCoordinateInM": -0.002108389,
+        "YCoordinateInM": 0.000486541,
+        "RadiusInM": 0.0021637990479714147,
+        "PhiInRad": 2.9147984472444994,
+        "Visible": true,
+        "CaliberInM": 0.0045,
+        "FiringDistanceInM": "NaN",
+        "Drawable": true,
+        "VisualGroup": -1,
+        "ScoreValue": 10.1,
+        "OverwriteScoreValueString": "",
+        "ManualScore": null,
+        "AppliedPenalties": [],
+        "TargetIdent": 61,
+        "TargetPictureId": "d172e141-ddde-41cc-ad03-d7ea17491908",
+        "Position": "10m",
+        "FrameHit": false,
+        "InnerTen": false,
+        "Miss": false,
+        "Velocity": 0.0,
+        "Ricochet": false,
+        "SystemCreated": false,
+        "FireKind": "ShotByShot",
+        "ScoreObjects": [
+            {
+                "ScoreMethodId": "56e9a91e-4d92-4582-9fd1-1137234a23ab",
+                "Name": "10m Air Rifle Tenth",
+                "ScoreFormat": "TenthScore",
+                "StringValue": "",
+                "Value": 10.1,
+                "MaximumScore": 10.9
+            }
+        ],
+        "RunningTargetMovement": "StandingStill",
+        "RunningTargetSpeed": "Fast",
+        "InTime": true,
+        "ElapsedTime": "46267.16:43:35.8190000"
+    },
+    "Totals": [
+        103.0
+    ],
+    "DisplayTotalStrings": [
+        "103.0"
+    ],
+    "Practices": [
+        {
+            "PracticeName": "",
+            "Groups": [
+                {
+                    "Shots": [
+                        {
+                            "Id": "ab276c2d-0c16-881b-b50e-d21052b637c0",
+                            "TimeStamp": "2026-09-04T18:35:36.043+02:00",
+                            "Demo": false,
+                            "Scores": [
+                                "5.6"
+                            ],
+                            "ShotNumber": 1,
+                            "DirectionArrow": "↑",
+                            "XCoordinateInM": 0.002142666,
+                            "YCoordinateInM": 0.013249677,
+                            "RadiusInM": 0.013421809050641609,
+                            "PhiInRad": 1.4104697272609077,
+                            "Visible": true,
+                            "CaliberInM": 0.0045,
+                            "FiringDistanceInM": "NaN",
+                            "Drawable": true,
+                            "VisualGroup": -1,
+                            "ScoreValue": 5.6,
+                            "OverwriteScoreValueString": "",
+                            "ManualScore": null,
+                            "AppliedPenalties": [],
+                            "TargetIdent": 61,
+                            "TargetPictureId": "d172e141-ddde-41cc-ad03-d7ea17491908",
+                            "Position": "10m",
+                            "FrameHit": false,
+                            "InnerTen": false,
+                            "Miss": false,
+                            "Velocity": 0.0,
+                            "Ricochet": false,
+                            "SystemCreated": false,
+                            "FireKind": "Sighters",
+                            "ScoreObjects": [
+                                {
+                                    "ScoreMethodId": "56e9a91e-4d92-4582-9fd1-1137234a23ab",
+                                    "Name": "10m Air Rifle Tenth",
+                                    "ScoreFormat": "TenthScore",
+                                    "StringValue": "",
+                                    "Value": 5.6,
+                                    "MaximumScore": 10.9
+                                }
+                            ],
+                            "RunningTargetMovement": "StandingStill",
+                            "RunningTargetSpeed": "Fast",
+                            "InTime": true,
+                            "ElapsedTime": "46267.16:35:36.0430000"
+                        },
+                        {
+                            "Id": "e698f806-baf8-29d3-6603-6ba107bd2b39",
+                            "TimeStamp": "2026-09-04T18:36:09.528+02:00",
+                            "Demo": false,
+                            "Scores": [
+                                "4.0"
+                            ],
+                            "ShotNumber": 2,
+                            "DirectionArrow": "↑",
+                            "XCoordinateInM": -0.001668837,
+                            "YCoordinateInM": 0.017319266,
+                            "RadiusInM": 0.01739948251274517,
+                            "PhiInRad": 1.6668570194247683,
+                            "Visible": true,
+                            "CaliberInM": 0.0045,
+                            "FiringDistanceInM": "NaN",
+                            "Drawable": true,
+                            "VisualGroup": -1,
+                            "ScoreValue": 4.0,
+                            "OverwriteScoreValueString": "",
+                            "ManualScore": null,
+                            "AppliedPenalties": [],
+                            "TargetIdent": 61,
+                            "TargetPictureId": "d172e141-ddde-41cc-ad03-d7ea17491908",
+                            "Position": "10m",
+                            "FrameHit": false,
+                            "InnerTen": false,
+                            "Miss": false,
+                            "Velocity": 0.0,
+                            "Ricochet": false,
+                            "SystemCreated": false,
+                            "FireKind": "Sighters",
+                            "ScoreObjects": [
+                                {
+                                    "ScoreMethodId": "56e9a91e-4d92-4582-9fd1-1137234a23ab",
+                                    "Name": "10m Air Rifle Tenth",
+                                    "ScoreFormat": "TenthScore",
+                                    "StringValue": "",
+                                    "Value": 4.0,
+                                    "MaximumScore": 10.9
+                                }
+                            ],
+                            "RunningTargetMovement": "StandingStill",
+                            "RunningTargetSpeed": "Fast",
+                            "InTime": true,
+                            "ElapsedTime": "46267.16:36:09.5280000"
+                        },
+                        {
+                            "Id": "e09fc685-1cbf-7dfa-91f3-3faa87afce34",
+                            "TimeStamp": "2026-09-04T18:36:45.662+02:00",
+                            "Demo": false,
+                            "Scores": [
+                                "7.7"
+                            ],
+                            "ShotNumber": 3,
+                            "DirectionArrow": "↗",
+                            "XCoordinateInM": 0.004298531,
+                            "YCoordinateInM": 0.006878715,
+                            "RadiusInM": 0.008111355546959213,
+                            "PhiInRad": 1.0122666250773016,
+                            "Visible": true,
+                            "CaliberInM": 0.0045,
+                            "FiringDistanceInM": "NaN",
+                            "Drawable": true,
+                            "VisualGroup": -1,
+                            "ScoreValue": 7.7,
+                            "OverwriteScoreValueString": "",
+                            "ManualScore": null,
+                            "AppliedPenalties": [],
+                            "TargetIdent": 61,
+                            "TargetPictureId": "d172e141-ddde-41cc-ad03-d7ea17491908",
+                            "Position": "10m",
+                            "FrameHit": false,
+                            "InnerTen": false,
+                            "Miss": false,
+                            "Velocity": 0.0,
+                            "Ricochet": false,
+                            "SystemCreated": false,
+                            "FireKind": "Sighters",
+                            "ScoreObjects": [
+                                {
+                                    "ScoreMethodId": "56e9a91e-4d92-4582-9fd1-1137234a23ab",
+                                    "Name": "10m Air Rifle Tenth",
+                                    "ScoreFormat": "TenthScore",
+                                    "StringValue": "",
+                                    "Value": 7.7,
+                                    "MaximumScore": 10.9
+                                }
+                            ],
+                            "RunningTargetMovement": "StandingStill",
+                            "RunningTargetSpeed": "Fast",
+                            "InTime": true,
+                            "ElapsedTime": "46267.16:36:45.6620000"
+                        },
+                        {
+                            "Id": "a4ef4a91-30d0-47f8-417b-a0ddd58f2544",
+                            "TimeStamp": "2026-09-04T18:37:30.596+02:00",
+                            "Demo": false,
+                            "Scores": [
+                                "8.8"
+                            ],
+                            "ShotNumber": 4,
+                            "DirectionArrow": "↑",
+                            "XCoordinateInM": -0.000564812,
+                            "YCoordinateInM": 0.005224697,
+                            "RadiusInM": 0.005255137613531448,
+                            "PhiInRad": 1.678482393422335,
+                            "Visible": true,
+                            "CaliberInM": 0.0045,
+                            "FiringDistanceInM": "NaN",
+                            "Drawable": true,
+                            "VisualGroup": -1,
+                            "ScoreValue": 8.8,
+                            "OverwriteScoreValueString": "",
+                            "ManualScore": null,
+                            "AppliedPenalties": [],
+                            "TargetIdent": 61,
+                            "TargetPictureId": "d172e141-ddde-41cc-ad03-d7ea17491908",
+                            "Position": "10m",
+                            "FrameHit": false,
+                            "InnerTen": false,
+                            "Miss": false,
+                            "Velocity": 0.0,
+                            "Ricochet": false,
+                            "SystemCreated": false,
+                            "FireKind": "Sighters",
+                            "ScoreObjects": [
+                                {
+                                    "ScoreMethodId": "56e9a91e-4d92-4582-9fd1-1137234a23ab",
+                                    "Name": "10m Air Rifle Tenth",
+                                    "ScoreFormat": "TenthScore",
+                                    "StringValue": "",
+                                    "Value": 8.8,
+                                    "MaximumScore": 10.9
+                                }
+                            ],
+                            "RunningTargetMovement": "StandingStill",
+                            "RunningTargetSpeed": "Fast",
+                            "InTime": true,
+                            "ElapsedTime": "46267.16:37:30.5960000"
+                        },
+                        {
+                            "Id": "812c109a-0f6c-ce8f-488c-f713bae34624",
+                            "TimeStamp": "2026-09-04T18:38:08.348+02:00",
+                            "Demo": false,
+                            "Scores": [
+                                "10.0"
+                            ],
+                            "ShotNumber": 5,
+                            "DirectionArrow": "↗",
+                            "XCoordinateInM": 0.001231868,
+                            "YCoordinateInM": 0.002052466,
+                            "RadiusInM": 0.002393765955681549,
+                            "PhiInRad": 1.0302376941865705,
+                            "Visible": true,
+                            "CaliberInM": 0.0045,
+                            "FiringDistanceInM": "NaN",
+                            "Drawable": true,
+                            "VisualGroup": -1,
+                            "ScoreValue": 10.0,
+                            "OverwriteScoreValueString": "",
+                            "ManualScore": null,
+                            "AppliedPenalties": [],
+                            "TargetIdent": 61,
+                            "TargetPictureId": "d172e141-ddde-41cc-ad03-d7ea17491908",
+                            "Position": "10m",
+                            "FrameHit": false,
+                            "InnerTen": false,
+                            "Miss": false,
+                            "Velocity": 0.0,
+                            "Ricochet": false,
+                            "SystemCreated": false,
+                            "FireKind": "Sighters",
+                            "ScoreObjects": [
+                                {
+                                    "ScoreMethodId": "56e9a91e-4d92-4582-9fd1-1137234a23ab",
+                                    "Name": "10m Air Rifle Tenth",
+                                    "ScoreFormat": "TenthScore",
+                                    "StringValue": "",
+                                    "Value": 10.0,
+                                    "MaximumScore": 10.9
+                                }
+                            ],
+                            "RunningTargetMovement": "StandingStill",
+                            "RunningTargetSpeed": "Fast",
+                            "InTime": true,
+                            "ElapsedTime": "46267.16:38:08.3480000"
+                        }
+                    ],
+                    "Totals": [],
+                    "DisplayTotalStrings": [],
+                    "FireKind": 0,
+                    "ShowIndex": -1,
+                    "TargetIdent": 61,
+                    "TargetPictureId": "d172e141-ddde-41cc-ad03-d7ea17491908",
+                    "ParameterResults": [
+                        {
+                            "Teilers": [],
+                            "ParameterResultType": "Bester Teiler",
+                            "ResultValid": false,
+                            "ResultDataType": "Artemis.ComponentLibrary.Common.Models.ParameterResults.ParameterResultBestTeiler, Artemis.ComponentLibrary.Common, Version=2026.2.3.0, Culture=neutral, PublicKeyToken=null",
+                            "ProductVersion": "2026.2.3"
+                        }
+                    ],
+                    "InfoLayerContributorMetaDataList": []
+                },
+                {
+                    "Shots": [
+                        {
+                            "Id": "b53f1f13-185e-6476-d801-50009cb5e6de",
+                            "TimeStamp": "2026-09-04T18:38:43.069+02:00",
+                            "Demo": false,
+                            "Scores": [
+                                "10.4"
+                            ],
+                            "ShotNumber": 1,
+                            "DirectionArrow": "→",
+                            "XCoordinateInM": 0.001378304,
+                            "YCoordinateInM": 0.000457051,
+                            "RadiusInM": 0.0014521079619012492,
+                            "PhiInRad": 0.32019326958853656,
+                            "Visible": true,
+                            "CaliberInM": 0.0045,
+                            "FiringDistanceInM": "NaN",
+                            "Drawable": true,
+                            "VisualGroup": -1,
+                            "ScoreValue": 10.4,
+                            "OverwriteScoreValueString": "",
+                            "ManualScore": null,
+                            "AppliedPenalties": [],
+                            "TargetIdent": 61,
+                            "TargetPictureId": "d172e141-ddde-41cc-ad03-d7ea17491908",
+                            "Position": "10m",
+                            "FrameHit": false,
+                            "InnerTen": true,
+                            "Miss": false,
+                            "Velocity": 0.0,
+                            "Ricochet": false,
+                            "SystemCreated": false,
+                            "FireKind": "ShotByShot",
+                            "ScoreObjects": [
+                                {
+                                    "ScoreMethodId": "56e9a91e-4d92-4582-9fd1-1137234a23ab",
+                                    "Name": "10m Air Rifle Tenth",
+                                    "ScoreFormat": "TenthScore",
+                                    "StringValue": "",
+                                    "Value": 10.4,
+                                    "MaximumScore": 10.9
+                                }
+                            ],
+                            "RunningTargetMovement": "StandingStill",
+                            "RunningTargetSpeed": "Fast",
+                            "InTime": true,
+                            "ElapsedTime": "46267.16:38:43.0690000"
+                        },
+                        {
+                            "Id": "7eccb8c3-30d6-e25f-ee50-63aa4399104f",
+                            "TimeStamp": "2026-09-04T18:39:17.334+02:00",
+                            "Demo": false,
+                            "Scores": [
+                                "9.9"
+                            ],
+                            "ShotNumber": 2,
+                            "DirectionArrow": "↗",
+                            "XCoordinateInM": 0.002229972,
+                            "YCoordinateInM": 0.0012876,
+                            "RadiusInM": 0.002575012404005853,
+                            "PhiInRad": 0.5236408374977704,
+                            "Visible": true,
+                            "CaliberInM": 0.0045,
+                            "FiringDistanceInM": "NaN",
+                            "Drawable": true,
+                            "VisualGroup": -1,
+                            "ScoreValue": 9.9,
+                            "OverwriteScoreValueString": "",
+                            "ManualScore": null,
+                            "AppliedPenalties": [],
+                            "TargetIdent": 61,
+                            "TargetPictureId": "d172e141-ddde-41cc-ad03-d7ea17491908",
+                            "Position": "10m",
+                            "FrameHit": false,
+                            "InnerTen": false,
+                            "Miss": false,
+                            "Velocity": 0.0,
+                            "Ricochet": false,
+                            "SystemCreated": false,
+                            "FireKind": "ShotByShot",
+                            "ScoreObjects": [
+                                {
+                                    "ScoreMethodId": "56e9a91e-4d92-4582-9fd1-1137234a23ab",
+                                    "Name": "10m Air Rifle Tenth",
+                                    "ScoreFormat": "TenthScore",
+                                    "StringValue": "",
+                                    "Value": 9.9,
+                                    "MaximumScore": 10.9
+                                }
+                            ],
+                            "RunningTargetMovement": "StandingStill",
+                            "RunningTargetSpeed": "Fast",
+                            "InTime": true,
+                            "ElapsedTime": "46267.16:39:17.3340000"
+                        },
+                        {
+                            "Id": "ecbd1abf-f528-2574-377b-798781b795b8",
+                            "TimeStamp": "2026-09-04T18:39:48.472+02:00",
+                            "Demo": false,
+                            "Scores": [
+                                "10.3"
+                            ],
+                            "ShotNumber": 3,
+                            "DirectionArrow": "←",
+                            "XCoordinateInM": -0.001536964,
+                            "YCoordinateInM": -0.000258599,
+                            "RadiusInM": 0.001558567220268988,
+                            "PhiInRad": 3.308284516378534,
+                            "Visible": true,
+                            "CaliberInM": 0.0045,
+                            "FiringDistanceInM": "NaN",
+                            "Drawable": true,
+                            "VisualGroup": -1,
+                            "ScoreValue": 10.3,
+                            "OverwriteScoreValueString": "",
+                            "ManualScore": null,
+                            "AppliedPenalties": [],
+                            "TargetIdent": 61,
+                            "TargetPictureId": "d172e141-ddde-41cc-ad03-d7ea17491908",
+                            "Position": "10m",
+                            "FrameHit": false,
+                            "InnerTen": true,
+                            "Miss": false,
+                            "Velocity": 0.0,
+                            "Ricochet": false,
+                            "SystemCreated": false,
+                            "FireKind": "ShotByShot",
+                            "ScoreObjects": [
+                                {
+                                    "ScoreMethodId": "56e9a91e-4d92-4582-9fd1-1137234a23ab",
+                                    "Name": "10m Air Rifle Tenth",
+                                    "ScoreFormat": "TenthScore",
+                                    "StringValue": "",
+                                    "Value": 10.3,
+                                    "MaximumScore": 10.9
+                                }
+                            ],
+                            "RunningTargetMovement": "StandingStill",
+                            "RunningTargetSpeed": "Fast",
+                            "InTime": true,
+                            "ElapsedTime": "46267.16:39:48.4720000"
+                        },
+                        {
+                            "Id": "bc85dba4-8ab2-2171-8360-32192c0626d6",
+                            "TimeStamp": "2026-09-04T18:40:18.048+02:00",
+                            "Demo": false,
+                            "Scores": [
+                                "10.5"
+                            ],
+                            "ShotNumber": 4,
+                            "DirectionArrow": "↖",
+                            "XCoordinateInM": -0.00071147,
+                            "YCoordinateInM": 0.000746662,
+                            "RadiusInM": 0.0010313552749387574,
+                            "PhiInRad": 2.3320641855966064,
+                            "Visible": true,
+                            "CaliberInM": 0.0045,
+                            "FiringDistanceInM": "NaN",
+                            "Drawable": true,
+                            "VisualGroup": -1,
+                            "ScoreValue": 10.5,
+                            "OverwriteScoreValueString": "",
+                            "ManualScore": null,
+                            "AppliedPenalties": [],
+                            "TargetIdent": 61,
+                            "TargetPictureId": "d172e141-ddde-41cc-ad03-d7ea17491908",
+                            "Position": "10m",
+                            "FrameHit": false,
+                            "InnerTen": true,
+                            "Miss": false,
+                            "Velocity": 0.0,
+                            "Ricochet": false,
+                            "SystemCreated": false,
+                            "FireKind": "ShotByShot",
+                            "ScoreObjects": [
+                                {
+                                    "ScoreMethodId": "56e9a91e-4d92-4582-9fd1-1137234a23ab",
+                                    "Name": "10m Air Rifle Tenth",
+                                    "ScoreFormat": "TenthScore",
+                                    "StringValue": "",
+                                    "Value": 10.5,
+                                    "MaximumScore": 10.9
+                                }
+                            ],
+                            "RunningTargetMovement": "StandingStill",
+                            "RunningTargetSpeed": "Fast",
+                            "InTime": true,
+                            "ElapsedTime": "46267.16:40:18.0480000"
+                        },
+                        {
+                            "Id": "5179f6ba-5456-072b-994f-86729c7a4301",
+                            "TimeStamp": "2026-09-04T18:40:45.18+02:00",
+                            "Demo": false,
+                            "Scores": [
+                                "10.1"
+                            ],
+                            "ShotNumber": 5,
+                            "DirectionArrow": "←",
+                            "XCoordinateInM": -0.001953455,
+                            "YCoordinateInM": 0.000777714,
+                            "RadiusInM": 0.0021025759208221236,
+                            "PhiInRad": 2.762706029637169,
+                            "Visible": true,
+                            "CaliberInM": 0.0045,
+                            "FiringDistanceInM": "NaN",
+                            "Drawable": true,
+                            "VisualGroup": -1,
+                            "ScoreValue": 10.1,
+                            "OverwriteScoreValueString": "",
+                            "ManualScore": null,
+                            "AppliedPenalties": [],
+                            "TargetIdent": 61,
+                            "TargetPictureId": "d172e141-ddde-41cc-ad03-d7ea17491908",
+                            "Position": "10m",
+                            "FrameHit": false,
+                            "InnerTen": false,
+                            "Miss": false,
+                            "Velocity": 0.0,
+                            "Ricochet": false,
+                            "SystemCreated": false,
+                            "FireKind": "ShotByShot",
+                            "ScoreObjects": [
+                                {
+                                    "ScoreMethodId": "56e9a91e-4d92-4582-9fd1-1137234a23ab",
+                                    "Name": "10m Air Rifle Tenth",
+                                    "ScoreFormat": "TenthScore",
+                                    "StringValue": "",
+                                    "Value": 10.1,
+                                    "MaximumScore": 10.9
+                                }
+                            ],
+                            "RunningTargetMovement": "StandingStill",
+                            "RunningTargetSpeed": "Fast",
+                            "InTime": true,
+                            "ElapsedTime": "46267.16:40:45.1800000"
+                        },
+                        {
+                            "Id": "a1b0a409-1cd4-2c1f-1e3c-55879318866e",
+                            "TimeStamp": "2026-09-04T18:41:13.857+02:00",
+                            "Demo": false,
+                            "Scores": [
+                                "10.8"
+                            ],
+                            "ShotNumber": 6,
+                            "DirectionArrow": "↖",
+                            "XCoordinateInM": -0.000258176,
+                            "YCoordinateInM": 0.000223952,
+                            "RadiusInM": 0.00034177382181788,
+                            "PhiInRad": 2.4270609183105627,
+                            "Visible": true,
+                            "CaliberInM": 0.0045,
+                            "FiringDistanceInM": "NaN",
+                            "Drawable": true,
+                            "VisualGroup": -1,
+                            "ScoreValue": 10.8,
+                            "OverwriteScoreValueString": "",
+                            "ManualScore": null,
+                            "AppliedPenalties": [],
+                            "TargetIdent": 61,
+                            "TargetPictureId": "d172e141-ddde-41cc-ad03-d7ea17491908",
+                            "Position": "10m",
+                            "FrameHit": false,
+                            "InnerTen": true,
+                            "Miss": false,
+                            "Velocity": 0.0,
+                            "Ricochet": false,
+                            "SystemCreated": false,
+                            "FireKind": "ShotByShot",
+                            "ScoreObjects": [
+                                {
+                                    "ScoreMethodId": "56e9a91e-4d92-4582-9fd1-1137234a23ab",
+                                    "Name": "10m Air Rifle Tenth",
+                                    "ScoreFormat": "TenthScore",
+                                    "StringValue": "",
+                                    "Value": 10.8,
+                                    "MaximumScore": 10.9
+                                }
+                            ],
+                            "RunningTargetMovement": "StandingStill",
+                            "RunningTargetSpeed": "Fast",
+                            "InTime": true,
+                            "ElapsedTime": "46267.16:41:13.8570000"
+                        },
+                        {
+                            "Id": "b39f0578-0fd8-4b6d-1d7e-962105b418c8",
+                            "TimeStamp": "2026-09-04T18:41:50.485+02:00",
+                            "Demo": false,
+                            "Scores": [
+                                "10.1"
+                            ],
+                            "ShotNumber": 7,
+                            "DirectionArrow": "↙",
+                            "XCoordinateInM": -0.00183564,
+                            "YCoordinateInM": -0.001284966,
+                            "RadiusInM": 0.002240694497417263,
+                            "PhiInRad": 3.7523251990522297,
+                            "Visible": true,
+                            "CaliberInM": 0.0045,
+                            "FiringDistanceInM": "NaN",
+                            "Drawable": true,
+                            "VisualGroup": -1,
+                            "ScoreValue": 10.1,
+                            "OverwriteScoreValueString": "",
+                            "ManualScore": null,
+                            "AppliedPenalties": [],
+                            "TargetIdent": 61,
+                            "TargetPictureId": "d172e141-ddde-41cc-ad03-d7ea17491908",
+                            "Position": "10m",
+                            "FrameHit": false,
+                            "InnerTen": false,
+                            "Miss": false,
+                            "Velocity": 0.0,
+                            "Ricochet": false,
+                            "SystemCreated": false,
+                            "FireKind": "ShotByShot",
+                            "ScoreObjects": [
+                                {
+                                    "ScoreMethodId": "56e9a91e-4d92-4582-9fd1-1137234a23ab",
+                                    "Name": "10m Air Rifle Tenth",
+                                    "ScoreFormat": "TenthScore",
+                                    "StringValue": "",
+                                    "Value": 10.1,
+                                    "MaximumScore": 10.9
+                                }
+                            ],
+                            "RunningTargetMovement": "StandingStill",
+                            "RunningTargetSpeed": "Fast",
+                            "InTime": true,
+                            "ElapsedTime": "46267.16:41:50.4850000"
+                        },
+                        {
+                            "Id": "224b02dd-4d1f-8cb7-d130-6588ec68aba6",
+                            "TimeStamp": "2026-09-04T18:42:28.867+02:00",
+                            "Demo": false,
+                            "Scores": [
+                                "10.6"
+                            ],
+                            "ShotNumber": 8,
+                            "DirectionArrow": "↖",
+                            "XCoordinateInM": -0.00054106,
+                            "YCoordinateInM": 0.000614574,
+                            "RadiusInM": 0.0008188083567453376,
+                            "PhiInRad": 2.2926665242554334,
+                            "Visible": true,
+                            "CaliberInM": 0.0045,
+                            "FiringDistanceInM": "NaN",
+                            "Drawable": true,
+                            "VisualGroup": -1,
+                            "ScoreValue": 10.6,
+                            "OverwriteScoreValueString": "",
+                            "ManualScore": null,
+                            "AppliedPenalties": [],
+                            "TargetIdent": 61,
+                            "TargetPictureId": "d172e141-ddde-41cc-ad03-d7ea17491908",
+                            "Position": "10m",
+                            "FrameHit": false,
+                            "InnerTen": true,
+                            "Miss": false,
+                            "Velocity": 0.0,
+                            "Ricochet": false,
+                            "SystemCreated": false,
+                            "FireKind": "ShotByShot",
+                            "ScoreObjects": [
+                                {
+                                    "ScoreMethodId": "56e9a91e-4d92-4582-9fd1-1137234a23ab",
+                                    "Name": "10m Air Rifle Tenth",
+                                    "ScoreFormat": "TenthScore",
+                                    "StringValue": "",
+                                    "Value": 10.6,
+                                    "MaximumScore": 10.9
+                                }
+                            ],
+                            "RunningTargetMovement": "StandingStill",
+                            "RunningTargetSpeed": "Fast",
+                            "InTime": true,
+                            "ElapsedTime": "46267.16:42:28.8670000"
+                        },
+                        {
+                            "Id": "e2c1e9a4-16ea-5472-1f85-b305f97424d8",
+                            "TimeStamp": "2026-09-04T18:43:04.712+02:00",
+                            "Demo": false,
+                            "Scores": [
+                                "10.2"
+                            ],
+                            "ShotNumber": 9,
+                            "DirectionArrow": "↑",
+                            "XCoordinateInM": 0.00052191,
+                            "YCoordinateInM": 0.001791668,
+                            "RadiusInM": 0.0018661361875072246,
+                            "PhiInRad": 1.287341656913883,
+                            "Visible": true,
+                            "CaliberInM": 0.0045,
+                            "FiringDistanceInM": "NaN",
+                            "Drawable": true,
+                            "VisualGroup": -1,
+                            "ScoreValue": 10.2,
+                            "OverwriteScoreValueString": "",
+                            "ManualScore": null,
+                            "AppliedPenalties": [],
+                            "TargetIdent": 61,
+                            "TargetPictureId": "d172e141-ddde-41cc-ad03-d7ea17491908",
+                            "Position": "10m",
+                            "FrameHit": false,
+                            "InnerTen": true,
+                            "Miss": false,
+                            "Velocity": 0.0,
+                            "Ricochet": false,
+                            "SystemCreated": false,
+                            "FireKind": "ShotByShot",
+                            "ScoreObjects": [
+                                {
+                                    "ScoreMethodId": "56e9a91e-4d92-4582-9fd1-1137234a23ab",
+                                    "Name": "10m Air Rifle Tenth",
+                                    "ScoreFormat": "TenthScore",
+                                    "StringValue": "",
+                                    "Value": 10.2,
+                                    "MaximumScore": 10.9
+                                }
+                            ],
+                            "RunningTargetMovement": "StandingStill",
+                            "RunningTargetSpeed": "Fast",
+                            "InTime": true,
+                            "ElapsedTime": "46267.16:43:04.7120000"
+                        },
+                        {
+                            "Id": "0e35e8d4-57fc-757c-cd19-09535c665d25",
+                            "TimeStamp": "2026-09-04T18:43:35.819+02:00",
+                            "Demo": false,
+                            "Scores": [
+                                "10.1"
+                            ],
+                            "ShotNumber": 10,
+                            "DirectionArrow": "←",
+                            "XCoordinateInM": -0.002108389,
+                            "YCoordinateInM": 0.000486541,
+                            "RadiusInM": 0.0021637990479714147,
+                            "PhiInRad": 2.9147984472444994,
+                            "Visible": true,
+                            "CaliberInM": 0.0045,
+                            "FiringDistanceInM": "NaN",
+                            "Drawable": true,
+                            "VisualGroup": -1,
+                            "ScoreValue": 10.1,
+                            "OverwriteScoreValueString": "",
+                            "ManualScore": null,
+                            "AppliedPenalties": [],
+                            "TargetIdent": 61,
+                            "TargetPictureId": "d172e141-ddde-41cc-ad03-d7ea17491908",
+                            "Position": "10m",
+                            "FrameHit": false,
+                            "InnerTen": false,
+                            "Miss": false,
+                            "Velocity": 0.0,
+                            "Ricochet": false,
+                            "SystemCreated": false,
+                            "FireKind": "ShotByShot",
+                            "ScoreObjects": [
+                                {
+                                    "ScoreMethodId": "56e9a91e-4d92-4582-9fd1-1137234a23ab",
+                                    "Name": "10m Air Rifle Tenth",
+                                    "ScoreFormat": "TenthScore",
+                                    "StringValue": "",
+                                    "Value": 10.1,
+                                    "MaximumScore": 10.9
+                                }
+                            ],
+                            "RunningTargetMovement": "StandingStill",
+                            "RunningTargetSpeed": "Fast",
+                            "InTime": true,
+                            "ElapsedTime": "46267.16:43:35.8190000"
+                        }
+                    ],
+                    "Totals": [
+                        103.0
+                    ],
+                    "DisplayTotalStrings": [
+                        "103.0"
+                    ],
+                    "FireKind": 1,
+                    "ShowIndex": -1,
+                    "TargetIdent": 61,
+                    "TargetPictureId": "d172e141-ddde-41cc-ad03-d7ea17491908",
+                    "ParameterResults": [
+                        {
+                            "Teilers": [
+                                0.00034177382181788,
+                                0.0008188083567453376,
+                                0.0010313552749387574
+                            ],
+                            "ParameterResultType": "Bester Teiler",
+                            "ResultValid": true,
+                            "ResultDataType": "Artemis.ComponentLibrary.Common.Models.ParameterResults.ParameterResultBestTeiler, Artemis.ComponentLibrary.Common, Version=2026.2.3.0, Culture=neutral, PublicKeyToken=null",
+                            "ProductVersion": "2026.2.3"
+                        }
+                    ],
+                    "InfoLayerContributorMetaDataList": []
+                }
+            ],
+            "Totals": [
+                103.0
+            ],
+            "DisplayTotalStrings": [
+                "103.0"
+            ],
+            "ParameterResults": []
+        }
+    ],
+    "NrOfInnerTens": 0,
+    "ParameterResults": [
+        {
+            "Teilers": [
+                0.00034177382181788,
+                0.0008188083567453376,
+                0.0010313552749387574
+            ],
+            "ParameterResultType": "Bester Teiler",
+            "ResultValid": true,
+            "ResultDataType": "Artemis.ComponentLibrary.Common.Models.ParameterResults.ParameterResultBestTeiler, Artemis.ComponentLibrary.Common, Version=2026.2.3.0, Culture=neutral, PublicKeyToken=null",
+            "ProductVersion": "2026.2.3"
+        }
+    ],
+    "IsLegacy": false,
+    "LegacyFirerInformation": {
+        "FirerId": 0,
+        "DisplayName": null,
+        "DisplayNation": null
+    },
+    "LegacyShootLogEventStartTime": "0001-01-01T01:00:00+01:00",
+    "BestShot": null,
+    "Id": "0cfb2c70-51d0-45e2-bc8e-ac8e5002981d",
+    "UserSessionInformation": {
+        "SessionId": "01a06d45-9d28-79cf-9f7e-d3283d6eebcb",
+        "ShootingSportsCloudSession": false,
+        "UserData": {
+            "ShootingSportsCloudId": "00000000-0000-0000-0000-000000000000",
+            "MemberId": "179016",
+            "OrganizationId": "1ae6bbf1-c3a2-4b49-8731-cce3fab54b62",
+            "IsDefaultUser": false,
+            "UserPreferredLanguage": "",
+            "UserDisplayId": "179016",
+            "Team": "",
+            "Name": "Meyer",
+            "FirstName": "Bernd",
+            "DisplayName": "MEYER Bernd",
+            "Club": "",
+            "Class": "",
+            "UserGroup": "Seniorenzug",
+            "Organization": "BSC Isenbüttel von 1852 e.V.",
+            "OrganizationCode": "",
+            "OrganizationPicture": "12f5d642-657e-4bb6-b89d-a3c9a13e1b77",
+            "NationISO": "DEU",
+            "NationIOC": "GER",
+            "Age": null,
+            "Gender": null,
+            "GenderTranslated": null,
+            "DateOfBirth": null,
+            "DisplayNation": "GER"
+        }
+    },
+    "Serial": 0,
+    "RangeId": "00:e2:69:77:04:40",
+    "RangeName": "DEU Isenbüttel 10m 10x SR24 LS10",
+    "LanguageIdentifier": "de",
+    "TimeZone": "Europe/Berlin",
+    "ExerciseAssignmentId": "25468219-6de8-4e1b-9f41-d20caf742a68",
+    "Suspendable": true,
+    "ExerciseStart": "2026-09-04T18:35:36.043+02:00",
+    "Rank": 0,
+    "NrOfCompetitionShots": 10,
+    "ExerciseEmpty": false,
+    "ExerciseProgress": "Finished",
+    "ExerciseSpecialEvents": [],
+    "CurrentExerciseState": "IsFinished",
+    "FiringPoint": 2,
+    "ExerciseName": "10 Schuss, 5 Probe",
+    "TotalString": "103.0",
+    "FaceSelector": "LiveCompetitionResultsView",
+    "TimerViewData": {
+        "State": 0,
+        "StartTime": "0001-01-01T01:00:00+01:00",
+        "TotalTimeInS": 0,
+        "IsRemoteControlled": false
+    },
+    "FaceSpecificData": "{\"ScoreBoxLayout\":\"GroupCollectionExercise\",\"ScoreBoxData\":\"{\\\"$type\\\":1,\\\"GroupsProgress\\\":{\\\"ActiveGroupIndex\\\":1,\\\"Progress\\\":1,\\\"Groups\\\":[\\\"P5\\\",\\\"103.0\\\"]},\\\"GroupsTotalData\\\":[{\\\"Index\\\":1,\\\"Caption\\\":\\\"Schuss für Schuss: 10\\\",\\\"CaptionAbbreviation\\\":\\\"E10\\\",\\\"Total\\\":\\\"103.0\\\",\\\"State\\\":\\\"Finished\\\"}],\\\"ShotListDescriptor\\\":{\\\"NumberOfPreferredShotsInShotList\\\":10,\\\"AvailableScores\\\":[{\\\"ValueName\\\":\\\"10m Air Rifle Tenth\\\",\\\"Alignment\\\":1,\\\"ValueFormatterClass\\\":\\\"ShotScoreFormatter\\\",\\\"SelectionIndex\\\":0},{\\\"ValueName\\\":\\\"x/y[mm]\\\",\\\"Alignment\\\":1,\\\"ValueFormatterClass\\\":\\\"ShotXYFormatterInMM\\\",\\\"SelectionIndex\\\":0}],\\\"PreferredOptionalColumnValueIndex\\\":-1}}\"}",
+    "WeaponId": "00000000-0000-0000-0000-000000000000",
+    "WeaponName": "",
+    "Comment": "",
+    "UserSpecificData": {
+        "WeaponNumber": "",
+        "AmmunitionName": "",
+        "AmmunitionLot": ""
+    },
+    "PreExerciseStepResults": {},
+    "PostExerciseStepResults": {},
+    "LastProcessedExerciseStepsList": "",
+    "LastProcessedExerciseStepsIndex": -1,
+    "PrintStreamData": "Target 2                           Target 2                        C\n04.09.2026 18:35                   04.09.2026 18:35                C\n179016 MEYER Bernd GER             179016 MEYER Bernd GER          C\n10 Schuss, 5 Probe                 10 Schuss, 5 Probe              C\n  1P ↑   5.6                         1P ↑   5.6                    C\n  2P ↑   4.0                         2P ↑   4.0                    C\n  3P ↗   7.7                         3P ↗   7.7                    C\n  4P ↑   8.8                         4P ↑   8.8                    C\n  5P ↗  10.0                         5P ↗  10.0                    C\n\nMatch                              Match                           C\n  1  →  10.4                         1  →  10.4                    C\n  2  ↗   9.9                         2  ↗   9.9                    C\n  3  ←  10.3                         3  ←  10.3                    C\n  4  ↖  10.5                         4  ↖  10.5                    C\n  5  ←  10.1                         5  ←  10.1                    C\n  6  ↖  10.8                         6  ↖  10.8                    C\n  7  ↙  10.1                         7  ↙  10.1                    C\n  8  ↖  10.6                         8  ↖  10.6                    C\n  9  ↑  10.2                         9  ↑  10.2                    C\n 10  ←  10.1                        10  ←  10.1                    C\nSubtotal:  103.0                   Subtotal:  103.0                C\nTOTAL 103.0                        TOTAL 103.0                     C\n\n\n\n\n\n\n\n\n\n\n",
+    "BackupDataString": "",
+    "ComponentDefinitionId": "4aa9ad02-c83c-f430-3399-2a09e50ef9ee",
+    "ResultDataType": "Artemis.ComponentLibrary.Common.Models.ExerciseResults.ShootPracticeGroup.ShootPracticeGroupExerciseResultData, Artemis.ComponentLibrary.Common, Version=2026.2.3.0, Culture=neutral, PublicKeyToken=null",
+    "ProductVersion": "2026.2.3"
+}

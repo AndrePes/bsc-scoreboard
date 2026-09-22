@@ -1,0 +1,7 @@
+{
+  "dataDir": "./data/raw",
+  "usePolling": false,
+  "pollingIntervalMs": 1000,
+  "eventName": "BSC ScoreBoard",
+  "rangeName": "Schießanlage BSC"
+}

@@ -78,7 +78,7 @@ export function exportRanglistePdf(
         'Bester Teiler',
         '2. Teiler',
         'Summe',
-        'Schüsse',
+        'Anzahl',
       ],
     ],
     body: data.participants.map((p) => [
@@ -88,7 +88,7 @@ export function exportRanglistePdf(
       fmt(p.bestTeiler),
       fmt(p.secondBestTeiler),
       fmt(p.teilerSum),
-      String(p.totalShots),
+      String(p.teilerCount),
     ]),
     styles: { fontSize: 9, cellPadding: 2 },
     headStyles: { fillColor: [5, 150, 105], textColor: 255 },

@@ -34,16 +34,29 @@ Vite + Tailwind 3). README and all UI strings are German.
 
 ## Architecture facts not obvious from filenames
 
-- All data is **hardcoded** in `server/src/data.ts` (in-memory `eventData`).
-  `server/data/` is empty and root `schema.json` is not read by any code; it
-  documents the external shooting-system export format (PascalCase keys) that
-  the internal `server/src/types.ts` model does not match. Ignore README's
-  claim that the server data is "based on schema.json".
-- Types are duplicated: `server/src/types.ts` = internal model,
+- Server data comes from **files written by the shooting range**
+  (`*_ExerciseResultData.json`, PascalCase keys, format documented in root
+  `schema.json`, examples in `server/data/raw/`). `server/config.json`
+  (`dataDir`, `usePolling`, ...) says where; `server/src/config.ts` resolves
+  relative paths against `server/`, env `DATA_DIR`/`CONFIG_PATH` override.
+  `server/src/watcher.ts` (chokidar) loads all files at startup and then
+  add/change/unlink events into the in-memory `DataStore`
+  (`server/src/store.ts`); `server/src/parser.ts` maps raw -> `SessionResult`.
+  Only `UserData.MemberId/FirstName/Name`, `ParameterResults[].Teilers`,
+  `LastShot.TimeStamp`, `Id` are used. Files missing these are skipped with a
+  log warning (e.g. the ISSF-format file in `server/data/`).
+- Teiler unit: raw `Teilers` are metres; the parser converts to **1/100 mm**
+  (`* 100000`, 1 decimal). Days are derived from the date part of
+  `LastShot.TimeStamp`; there is no fixed day list.
+- Types are duplicated: `server/src/types.ts` = raw + internal model,
   `client/src/types.ts` = API response shapes. Changing a response in
   `server/src/index.ts` requires a manual update in `client/src/types.ts`.
 - Domain rule: **lower Teiler is better**. Rankings sort ascending;
-  `computeBestTeiler` returns `Number.POSITIVE_INFINITY` when there are no shots.
-- `GET /api/event/all/participants` exists (aggregates all days) but is missing
-  from the README API table. The client uses the string `'all'` as a sentinel
-  `selectedDate` for it (`client/src/App.tsx`).
+  `computeBestTeiler` returns `Number.POSITIVE_INFINITY` when there are no values.
+  Each file contributes only its 3 best Teiler, so `teilerCount` is a count of
+  Teiler values, not shots.
+- `GET /api/event/all/participants` aggregates all days. The client uses the
+  string `'all'` as a sentinel `selectedDate` for it (`client/src/App.tsx`).
+- Client server address is runtime config: `client/public/config.json`
+  (`apiBaseUrl`), loaded by `client/src/config.ts`; empty = same origin/Vite proxy.
+- chokidar 5 requires Node >= 20.19.
