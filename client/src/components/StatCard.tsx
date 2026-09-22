@@ -1,11 +1,19 @@
 interface CardProps {
   label: string;
   value: string | number | null;
+  /** Zusatzinfo unter dem Wert, z. B. der Name des Schützen. */
+  subtitle?: string | null;
   suffix?: string;
   highlight?: boolean;
 }
 
-export function StatCard({ label, value, suffix, highlight }: CardProps) {
+export function StatCard({
+  label,
+  value,
+  subtitle,
+  suffix,
+  highlight,
+}: CardProps) {
   const display = value === null || value === undefined ? '–' : value;
   return (
     <div
@@ -26,6 +34,11 @@ export function StatCard({ label, value, suffix, highlight }: CardProps) {
           </span>
         )}
       </div>
+      {subtitle && (
+        <div className="mt-1 truncate text-sm text-slate-600" title={subtitle}>
+          {subtitle}
+        </div>
+      )}
     </div>
   );
 }

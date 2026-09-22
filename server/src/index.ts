@@ -16,7 +16,19 @@ interface ParticipantStats {
   club?: string;
   rank: number;
   bestTeiler: number;
+  /** Zweitbester Teiler des Teilnehmers, null bei nur einem Schuss. */
+  secondBestTeiler: number | null;
+  /** Summe aus bestem und zweitbestem Teiler, null wenn kein zweiter Schuss. */
+  teilerSum: number | null;
   totalShots: number;
+}
+
+/** Ein Top-Teiler des Tages inkl. Schütze. */
+interface TopTeiler {
+  teiler: number;
+  participantId: string;
+  firstName: string;
+  lastName: string;
 }
 
 function shotsForDay(p: Participant, day: string | null): Shot[] {
@@ -27,6 +39,11 @@ function shotsForDay(p: Participant, day: string | null): Shot[] {
 function computeBestTeiler(shots: Shot[]): number {
   if (shots.length === 0) return Number.POSITIVE_INFINITY;
   return Math.min(...shots.map((s) => s.teiler));
+}
+
+/** Teiler aufsteigend sortiert (niedriger = besser). */
+function sortedTeilers(shots: Shot[]): number[] {
+  return shots.map((s) => s.teiler).sort((a, b) => a - b);
 }
 
 app.get('/api/event', (_req, res) => {
@@ -43,21 +60,40 @@ function buildDayResponse(dayShotsLookup: (p: Participant) => Shot[], day: Event
     .filter((entry) => entry.shots.length > 0);
 
   const stats: ParticipantStats[] = participantsWithShots
-    .map(({ p, shots }) => ({
-      id: p.id,
-      firstName: p.firstName,
-      lastName: p.lastName,
-      club: p.club,
-      rank: 0,
-      bestTeiler: computeBestTeiler(shots),
-      totalShots: shots.length,
-    }))
+    .map(({ p, shots }) => {
+      const teilers = sortedTeilers(shots);
+      const bestTeiler = computeBestTeiler(shots);
+      const secondBestTeiler = teilers[1] ?? null;
+      return {
+        id: p.id,
+        firstName: p.firstName,
+        lastName: p.lastName,
+        club: p.club,
+        rank: 0,
+        bestTeiler,
+        secondBestTeiler,
+        teilerSum:
+          secondBestTeiler === null
+            ? null
+            : Math.round((bestTeiler + secondBestTeiler) * 100) / 100,
+        totalShots: shots.length,
+      };
+    })
     .sort((a, b) => a.bestTeiler - b.bestTeiler)
     .map((s, idx) => ({ ...s, rank: idx + 1 }));
 
-  const allShots = participantsWithShots.flatMap(({ shots }) => shots);
-  const sortedTeilers = allShots.map((s) => s.teiler).sort((a, b) => a - b);
-  const top3 = sortedTeilers.slice(0, 3);
+  // Die drei besten Einzelschüsse des Tages über alle Teilnehmer, inkl. Schütze.
+  const top3: TopTeiler[] = participantsWithShots
+    .flatMap(({ p, shots }) =>
+      shots.map((s) => ({
+        teiler: s.teiler,
+        participantId: p.id,
+        firstName: p.firstName,
+        lastName: p.lastName,
+      })),
+    )
+    .sort((a, b) => a.teiler - b.teiler)
+    .slice(0, 3);
 
   return {
     day,

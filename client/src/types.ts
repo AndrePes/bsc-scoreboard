@@ -16,14 +16,26 @@ export interface ParticipantListEntry {
   club?: string;
   rank: number;
   bestTeiler: number;
+  /** Zweitbester Teiler, null bei nur einem Schuss. */
+  secondBestTeiler: number | null;
+  /** Summe aus bestem und zweitbestem Teiler, null wenn kein zweiter Schuss. */
+  teilerSum: number | null;
   totalShots: number;
+}
+
+/** Ein Top-Teiler des Tages inkl. Schütze. */
+export interface TopTeiler {
+  teiler: number;
+  participantId: string;
+  firstName: string;
+  lastName: string;
 }
 
 export interface DayStats {
   participantCount: number;
-  bestTeiler: number | null;
-  secondBestTeiler: number | null;
-  thirdBestTeiler: number | null;
+  bestTeiler: TopTeiler | null;
+  secondBestTeiler: TopTeiler | null;
+  thirdBestTeiler: TopTeiler | null;
 }
 
 export interface DayParticipantsResponse {
@@ -34,7 +46,6 @@ export interface DayParticipantsResponse {
 
 export interface StatPair {
   bestTeiler: number | null;
-  worstTeiler: number | null;
   shotCount: number;
 }
 

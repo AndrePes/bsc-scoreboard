@@ -113,20 +113,12 @@ export function DetailsColumn({
                 value: fmt(data.selectedDayStats.bestTeiler),
               },
               {
-                label: 'Schlechtester Schuss/Teiler (Ausgewählter Tag)',
-                value: fmt(data.selectedDayStats.worstTeiler),
-              },
-              {
                 label: 'Anzahl abgegebener Schüsse (Ausgewählter Tag)',
                 value: String(data.selectedDayStats.shotCount),
               },
               {
                 label: 'Bester Schuss/Teiler (Alle Tage)',
                 value: fmt(data.allDaysStats.bestTeiler),
-              },
-              {
-                label: 'Schlechtester Schuss/Teiler (Alle Tage)',
-                value: fmt(data.allDaysStats.worstTeiler),
               },
               {
                 label: 'Anzahl abgegebener Schüsse (Alle Tage)',

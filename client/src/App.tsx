@@ -70,6 +70,7 @@ export default function App() {
         }}
       />
       <CenterColumn
+        eventName={eventInfo.eventName}
         selectedDate={selectedDate}
         selectedParticipantId={selectedParticipantId}
         onSelectParticipant={setSelectedParticipantId}

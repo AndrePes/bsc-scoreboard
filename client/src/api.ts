@@ -1,13 +1,13 @@
+import { loadConfig } from './config';
 import type {
   DayParticipantsResponse,
   EventInfo,
   ParticipantDetail,
 } from './types';
 
-const BASE = '/api';
-
 async function getJson<T>(url: string): Promise<T> {
-  const res = await fetch(`${BASE}${url}`);
+  const { apiBaseUrl } = await loadConfig();
+  const res = await fetch(`${apiBaseUrl}/api${url}`);
   if (!res.ok) {
     throw new Error(`Request failed: ${res.status} ${res.statusText}`);
   }
