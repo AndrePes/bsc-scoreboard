@@ -19,6 +19,29 @@ function round2(value: number): number {
 }
 
 /**
+ * Sortierreihenfolge des Live-Boards: Summe aus bestem und zweitbestem Teiler,
+ * aufsteigend (kleiner = besser). Teilnehmer ohne zweiten Teiler (keine Summe)
+ * kommen ans Ende; bei Gleichstand entscheidet der bessere Einzel-Teiler.
+ */
+function compareBySum(a: ParticipantListEntry, b: ParticipantListEntry) {
+  if (a.teilerSum === null && b.teilerSum === null) {
+    return a.bestTeiler - b.bestTeiler;
+  }
+  if (a.teilerSum === null) return 1;
+  if (b.teilerSum === null) return -1;
+  return a.teilerSum - b.teilerSum || a.bestTeiler - b.bestTeiler;
+}
+
+/** Sortiert nach Summe und vergibt die Ränge neu (1..n). */
+export function rankBySum(
+  entries: ParticipantListEntry[],
+): ParticipantListEntry[] {
+  return [...entries]
+    .sort(compareBySum)
+    .map((p, idx) => ({ ...p, rank: idx + 1 }));
+}
+
+/**
  * Fasst die Ranglisten mehrerer Tage zu einer Gesamt-Rangliste zusammen.
  * Da pro Tag der beste und zweitbeste Teiler bekannt sind, ergeben sich die
  * zwei besten Gesamt-Teiler eines Teilnehmers aus der Vereinigung dieser Werte.
@@ -51,8 +74,8 @@ export function mergeRankings(
     }
   }
 
-  return [...byId.values()]
-    .map(({ entry, teilers, count }) => {
+  return rankBySum(
+    [...byId.values()].map(({ entry, teilers, count }) => {
       const sorted = [...teilers].sort((a, b) => a - b);
       const best = sorted[0];
       const second = sorted[1] ?? null;
@@ -64,9 +87,8 @@ export function mergeRankings(
         teilerCount: count,
         rank: 0,
       };
-    })
-    .sort((a, b) => a.bestTeiler - b.bestTeiler)
-    .map((p, idx) => ({ ...p, rank: idx + 1 }));
+    }),
+  );
 }
 
 /** Lädt alle Daten für die Live-Ansicht gemäß Konfiguration. */
@@ -84,14 +106,14 @@ export async function loadLiveBoardData(
       base,
       '/event/all/participants',
     );
-    ranking = all.participants;
+    ranking = rankBySum(all.participants);
     periodLabel = all.day.label;
   } else if (config.dates.length === 1) {
     const single = await getJson<DayParticipantsResponse>(
       base,
       `/event/days/${encodeURIComponent(config.dates[0])}/participants`,
     );
-    ranking = single.participants;
+    ranking = rankBySum(single.participants);
     periodLabel = single.day.label;
   } else {
     const results = await Promise.all(

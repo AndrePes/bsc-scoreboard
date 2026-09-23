@@ -67,7 +67,9 @@ auto-scrolling view for range monitors). README and all UI strings are German.
   several dates are merged client-side in `live_board/src/api.ts:mergeRankings`,
   which only works because each list entry carries best + second-best Teiler),
   `refreshIntervalSec`, `scrollSpeedPxPerSec`, `scrollPauseSec`, `visibleRows`.
-  Top 5 of the ranking are tiles, ranks >= 6 go to the auto-scrolling table
+  Live-board ranking is re-sorted client-side by `teilerSum` ascending
+  (`rankBySum`; entries without a sum go last), unlike the client which shows the
+  server order by `bestTeiler`. Top 5 of the ranking are tiles, ranks >= 6 go to the auto-scrolling table
   (`live_board/src/components/AutoScrollTable.tsx`, rAF + translateY, row height
   = viewport / visibleRows).
 - chokidar 5 requires Node >= 20.19.

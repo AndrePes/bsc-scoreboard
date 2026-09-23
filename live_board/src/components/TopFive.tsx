@@ -33,7 +33,7 @@ export function TopFive({ entries }: TopFiveProps) {
                 {rank}
               </span>
               <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
-                {isFirst ? 'Bester Teiler' : `Rang ${rank}`}
+                {isFirst ? 'Beste Summe' : `Rang ${rank}`}
               </span>
             </div>
 
@@ -52,27 +52,27 @@ export function TopFive({ entries }: TopFiveProps) {
             <div className="mt-4 flex items-end justify-between gap-3">
               <div>
                 <div className="text-xs uppercase tracking-wide text-slate-500">
-                  Teiler
+                  Summe
                 </div>
                 <div
                   className={`text-5xl font-bold leading-none ${
                     isFirst ? 'text-emerald-700' : 'text-slate-800'
                   }`}
                 >
-                  {formatTeiler(p?.bestTeiler)}
+                  {formatTeiler(p?.teilerSum)}
                 </div>
               </div>
               <div className="text-right text-sm text-slate-600">
                 <div>
-                  2. Teiler{' '}
+                  Bester Teiler{' '}
                   <span className="font-semibold text-slate-800">
-                    {formatTeiler(p?.secondBestTeiler)}
+                    {formatTeiler(p?.bestTeiler)}
                   </span>
                 </div>
                 <div>
-                  Summe{' '}
-                  <span className="font-semibold text-emerald-700">
-                    {formatTeiler(p?.teilerSum)}
+                  2. Teiler{' '}
+                  <span className="font-semibold text-slate-800">
+                    {formatTeiler(p?.secondBestTeiler)}
                   </span>
                 </div>
               </div>
