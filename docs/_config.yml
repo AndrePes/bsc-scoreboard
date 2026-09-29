@@ -1,0 +1,23 @@
+# Jekyll-Konfiguration für GitHub Pages
+# Einrichtung: Repository -> Settings -> Pages -> Source "Deploy from a branch",
+# Branch "main", Ordner "/docs".
+title: BSC ScoreBoard
+description: Dokumentation des Scoreboards für Schießwettkämpfe (Teiler-Auswertung)
+lang: de
+theme: jekyll-theme-cayman
+
+# Auf GitHub Pages standardmäßig verfügbare Plugins
+plugins:
+  - jekyll-relative-links
+  - jekyll-optional-front-matter
+  - jekyll-default-layout
+
+# Relative Links auf .md-Dateien werden in HTML-Links umgeschrieben,
+# damit die Dokumentation sowohl auf GitHub als auch auf Pages funktioniert.
+relative_links:
+  enabled: true
+  collections: true
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
