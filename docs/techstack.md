@@ -23,7 +23,7 @@ npm-Workspaces; jedes Paket hat eigene `package.json`, `package-lock.json` und
 | --- | --- | --- |
 | `express` | ^4.19 | HTTP-Server und Routing |
 | `cors` | ^2.8 | CORS-Header (alle Origins erlaubt) |
-| `chokidar` | ^5.0 | Dateisystem-Überwachung des Datenordners |
+| `chokidar` | ^5.0 | Dateisystem-Überwachung des heutigen Tagesordners (wartet nicht selbst auf fehlende Pfade – der Server prüft alle 5 s nach) |
 | `typescript` | ^5.4 | Compiler (`tsc -p tsconfig.json`) |
 | `tsx` | ^4.7 | TypeScript-Ausführung mit Watch-Modus für die Entwicklung |
 | `@types/express`, `@types/cors`, `@types/node` | – | Typdefinitionen |

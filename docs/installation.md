@@ -69,23 +69,27 @@ npm --prefix server install -D <paket>
 ## Installation prüfen
 
 ```bash
-# Server starten (lädt die Beispieldaten aus server/data/raw)
+# Server starten (lädt die Beispieldaten aus server/data/raw/20260904/Exercise/raw)
 npm run dev:server
 ```
 
 Erwartete Ausgabe (gekürzt):
 
 ```
-[monitor] Initial 67 von 67 Datei(en) aus /…/server/data/raw geladen
-[monitor] Überwache /…/server/data/raw (Dateisystem-Events)
+[monitor] Tag 20260904: 67 von 67 Datei(en) geladen
+[monitor] Initial 67 von 67 Datei(en) aus 1 Tagesordner(n) unter /…/server/data/raw geladen
+[monitor] Tagesordner /…/server/data/raw/<heute>/Exercise/raw existiert noch nicht, warte auf die Schießanlage …
 BSC ScoreBoard Server listening on http://localhost:4000
 ```
+
+Die Meldung „existiert noch nicht“ ist erwartet: Es gibt keinen Ordner für den
+heutigen Tag; der Server überwacht ihn, sobald er angelegt wird.
 
 In einem zweiten Terminal:
 
 ```bash
 curl http://localhost:4000/api/health
-# {"status":"ok","dataDir":"…/server/data/raw","files":67,"participants":…}
+# {"status":"ok","dataDir":"…/server/data/raw","todayDir":"…","watchDir":null,"files":67,"participants":…}
 ```
 
 Anschließend Client und Live-Board starten:
@@ -97,7 +101,8 @@ npm run dev:live     # http://localhost:5174
 
 ## Nächste Schritte
 
-- Datenordner der Schießanlage eintragen: [Konfiguration](konfiguration.md)
+- Export-Ordner der Schießanlage (Wurzel, z. B. `C:/temp/RangePrinterExport`)
+  eintragen: [Konfiguration](konfiguration.md)
 - Production-Build und Betrieb ohne Dev-Server: [Ausführen und Betrieb](betrieb.md)
 
 ## Häufige Probleme
@@ -109,3 +114,5 @@ npm run dev:live     # http://localhost:5174
 | Client zeigt `Fehler beim Laden der Veranstaltung: Request failed: 404` | Server läuft nicht oder `apiBaseUrl` zeigt auf falschen Host/Port. |
 | Build des Clients schlägt mit `'x' is declared but its value is never read` fehl | `noUnusedLocals` ist aktiv – ungenutzte Importe/Variablen entfernen. |
 | Server erkennt neue Dateien auf einem Netzlaufwerk nicht | `usePolling: true` in `server/config.json` setzen. |
+| `/api/health` zeigt `"watchDir": null` | Der Ordner `<dataDir>/<heute>/Exercise/raw` existiert nicht. Im Dev-Betrieb normal (Beispieldaten sind vom 04.09.2026); im Wettkampf: Systemdatum des Servers und `dataDir` (muss die Wurzel sein) prüfen. |
+| Beim Start werden 0 Dateien geladen | `dataDir` zeigt direkt auf einen Tagesordner oder auf `Exercise/raw` statt auf die Wurzel. Der Server erwartet `<dataDir>/YYYYMMDD/Exercise/raw`. |

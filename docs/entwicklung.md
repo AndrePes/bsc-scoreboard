@@ -121,12 +121,36 @@ anpassen und beide Frontend-Builds prüfen.
 `TOP_COUNT` in `live_board/src/App.tsx` und `SLOTS` sowie `grid-cols-5` in
 `live_board/src/components/TopFive.tsx`.
 
+### Ordnerstruktur der Anlage ändern
+
+Alles in `server/src/watcher.ts`:
+
+- `DAY_DIR_PATTERN` (`^\d{8}$`) bestimmt, welche Unterordner der Export-Wurzel
+  als Tagesordner gelten; `todayDirName()` erzeugt den Namen des heutigen
+  Ordners (lokale Zeit, `YYYYMMDD`). Beide müssen zueinander passen.
+- `dayDataDir(config, dayName)` setzt den vollständigen Pfad
+  `<dataDir>/<dayName>/<daySubDir>` zusammen; `daySubDir` kommt aus
+  `config.json`.
+- `DAY_CHECK_INTERVAL_MS` (5 s) ist das Intervall, in dem auf einen noch
+  fehlenden Tagesordner bzw. auf den Tageswechsel geprüft wird. chokidar 5
+  wartet **nicht** selbst auf nicht existierende Pfade, daher ist diese
+  Prüfung nötig.
+- `startFileMonitor` gibt ein `FileMonitor`-Objekt zurück (`watchDir`,
+  `todayDir`, `close()`); `index.ts` nutzt es für `/api/health`.
+
 ## Debugging
 
 - Server-Logs sind mit `[config]` und `[monitor]` präfixiert; alle Meldungen
   sind deutsch.
-- `GET /api/health` zeigt den tatsächlich verwendeten `dataDir` – hilfreich
-  bei Pfadproblemen (relative Pfade werden gegen `server/` aufgelöst).
+- `GET /api/health` zeigt den tatsächlich verwendeten `dataDir`, den
+  erwarteten heutigen Ordner `todayDir` und den überwachten Ordner `watchDir`
+  (`null` = Tagesordner existiert noch nicht) – hilfreich bei Pfadproblemen
+  (relative Pfade werden gegen `server/` aufgelöst) und bei falschem
+  Systemdatum.
+- Tageswechsel lokal testen: `DATA_DIR` auf einen temporären Ordner setzen,
+  Server starten und `<tmp>/<heute>/Exercise/raw` anlegen – nach maximal 5 s
+  erscheint `[monitor] Überwache …`. Siehe auch
+  [Betrieb – Neue Dateien simulieren](betrieb.md#neue-dateien-simulieren).
 - Frontend: `config.json`-Fehler erscheinen als `console.warn`
   (`config.json konnte nicht geladen werden, verwende Standardwerte.`).
 - Live-Board bei mehreren Tagen: einzelne Tagesfehler stehen als

@@ -11,8 +11,14 @@ import { fileURLToPath } from 'node:url';
  *   PORT         HTTP-Port (wird in index.ts ausgewertet)
  */
 export interface ServerConfig {
-  /** Quell-Ordner mit den `*_ExerciseResultData.json`-Dateien (absolut). */
+  /**
+   * Wurzel des Export-Ordners der Schießanlage (absolut). Darunter legt die
+   * Anlage pro Tag einen Ordner `YYYYMMDD/<daySubDir>/` an, z. B.
+   * `C:\temp\RangePrinterExport\20260929\Exercise\raw`.
+   */
   dataDir: string;
+  /** Relativer Pfad innerhalb eines Tagesordners zu den JSON-Dateien. */
+  daySubDir: string;
   /** Polling statt FS-Events verwenden (nötig z. B. für Netzlaufwerke/SMB). */
   usePolling: boolean;
   /** Polling-Intervall in ms (nur bei usePolling). */
@@ -29,6 +35,7 @@ export const SERVER_ROOT = path.resolve(
 
 const DEFAULTS: ServerConfig = {
   dataDir: path.join(SERVER_ROOT, 'data', 'raw'),
+  daySubDir: path.join('Exercise', 'raw'),
   usePolling: false,
   pollingIntervalMs: 1000,
   eventName: 'BSC ScoreBoard',
@@ -84,8 +91,14 @@ export function loadConfig(): ServerConfig {
   const dataDirRaw = process.env.DATA_DIR ?? str(raw.dataDir, DEFAULTS.dataDir);
   const dataDir = path.resolve(SERVER_ROOT, dataDirRaw);
 
+  // Unterpfad im Tagesordner; Backslashes (Windows-Schreibweise) erlauben.
+  const daySubDir = path.normalize(
+    str(raw.daySubDir, DEFAULTS.daySubDir).replace(/\\/g, '/'),
+  );
+
   return {
     dataDir,
+    daySubDir,
     usePolling: bool(raw.usePolling, DEFAULTS.usePolling),
     pollingIntervalMs: num(raw.pollingIntervalMs, DEFAULTS.pollingIntervalMs),
     eventName: str(raw.eventName, DEFAULTS.eventName),

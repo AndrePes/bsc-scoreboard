@@ -40,12 +40,17 @@ auto-scrolling view for range monitors). README and all UI strings are German.
 
 - Server data comes from **files written by the shooting range**
   (`*_ExerciseResultData.json`, PascalCase keys, format documented in root
-  `schema.json`, examples in `server/data/raw/`). `server/config.json`
-  (`dataDir`, `usePolling`, ...) says where; `server/src/config.ts` resolves
-  relative paths against `server/`, env `DATA_DIR`/`CONFIG_PATH` override.
-  `server/src/watcher.ts` (chokidar) loads all files at startup and then
-  add/change/unlink events into the in-memory `DataStore`
-  (`server/src/store.ts`); `server/src/parser.ts` maps raw -> `SessionResult`.
+  `schema.json`, examples in `server/data/raw/20260904/Exercise/raw/`). The
+  range creates **one folder per day**: `<dataDir>/<YYYYMMDD>/<daySubDir>`
+  (`daySubDir` default `Exercise/raw`). `server/config.json` `dataDir` is the
+  **root** only; `server/src/config.ts` resolves relative paths against
+  `server/`, env `DATA_DIR`/`CONFIG_PATH` override.
+  `server/src/watcher.ts` (chokidar) loads all day folders at startup but
+  **watches only today's folder** (local date, `todayDirName()`); if it does
+  not exist yet it re-checks every 5 s (chokidar 5 does not wait for missing
+  paths), and it switches folders at midnight. Events add/change/unlink go
+  into the in-memory `DataStore` (`server/src/store.ts`);
+  `server/src/parser.ts` maps raw -> `SessionResult`.
   Only `UserData.MemberId/FirstName/Name`, `ParameterResults[].Teilers`,
   `LastShot.TimeStamp`, `Id` are used. Files missing these are skipped with a
   log warning (e.g. the ISSF-format file in `server/data/`).

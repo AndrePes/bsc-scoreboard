@@ -5,9 +5,27 @@ title: Datenformat der Schießanlage
 # Datenformat der Schießanlage
 
 Die Schießanlage (Artemis-System) schreibt nach jedem abgeschlossenen
-Durchgang eine JSON-Datei in den Datenordner. Das vollständige Format ist im
+Durchgang eine JSON-Datei in den Export-Ordner. Das vollständige Format ist im
 Repository als JSON-Schema dokumentiert (`schema.json`, Titel
-„ExcerciseResult Schmema“); Beispieldateien liegen in `server/data/raw/`.
+„ExcerciseResult Schmema“); Beispieldateien liegen in
+`server/data/raw/20260904/Exercise/raw/`.
+
+## Ordnerstruktur
+
+Pro Tag legt die Anlage einen Ordner mit dem Datum (`YYYYMMDD`) an, darunter
+`Exercise/raw/` mit den Ergebnisdateien:
+
+```
+C:\temp\RangePrinterExport\
+└── 20260929\
+    └── Exercise\
+        └── raw\
+            ├── 20260929-101512_3_170060_ExerciseResultData.json
+            └── …
+```
+
+Der Server erhält in `config.json` nur die Wurzel (`dataDir`) und ergänzt
+`<YYYYMMDD>/Exercise/raw` selbst (siehe [Server](server.md#ordnerstruktur)).
 
 ## Dateiname
 
@@ -18,10 +36,11 @@ YYYYMMDD-HHMMSS_<FiringPoint>_<MemberId>_ExerciseResultData.json
 Beispiel: `20260904-184337_2_179016_ExerciseResultData.json`
 (4. September 2026, 18:43:37 Uhr, Stand 2, Mitglied 179016).
 
-Der Dateiname wird vom Server **nicht** ausgewertet; alle Informationen werden
-aus dem JSON-Inhalt gelesen. Der Watcher berücksichtigt alle Dateien mit der
-Endung `.json` (unabhängig von Groß-/Kleinschreibung) auf der obersten Ebene
-des Datenordners.
+Der Dateiname wird vom Server **nicht** ausgewertet; alle Informationen
+(auch der Veranstaltungstag) werden aus dem JSON-Inhalt gelesen. Der Server
+berücksichtigt alle Dateien mit der Endung `.json` (unabhängig von
+Groß-/Kleinschreibung) direkt im Ordner `<YYYYMMDD>/Exercise/raw`, keine
+weiteren Unterordner.
 
 ## Verwendete Felder
 
@@ -119,9 +138,10 @@ Eine Datei wird mit einer Warnung im Server-Log übersprungen, wenn
 - `LastShot` oder `LastShot.TimeStamp` fehlt bzw. ungültig ist,
 - kein `ParameterResults`-Eintrag mit einem `Teilers`-Array vorhanden ist.
 
-Beispiel für eine übersprungene Datei: die Dateien im ISSF-Format in
-`server/data/` (nicht `raw/`) besitzen `LastShot: null` und keine
-`ParameterResults`; das Log meldet `übersprungen: LastShot fehlt`.
+Beispiel für eine Datei, die übersprungen würde: die Dateien im ISSF-Format
+in `server/data/` besitzen `LastShot: null` und keine `ParameterResults`; in
+einem Tagesordner würde das Log `übersprungen: LastShot fehlt` melden. (Da
+sie nicht in einem Tagesordner liegen, werden sie derzeit gar nicht gelesen.)
 
 War die Datei zuvor erfolgreich geladen und wird später ungültig, entfernt der
 Server sie aus dem Store.

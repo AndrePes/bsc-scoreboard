@@ -6,12 +6,49 @@ import { ParseError, parseExerciseResult } from './parser.js';
 import type { DataStore } from './store.js';
 
 const FILE_PATTERN = /\.json$/i;
+/** Tagesordner der Anlage: YYYYMMDD */
+const DAY_DIR_PATTERN = /^\d{8}$/;
 /** Wartezeit nach einem Lesefehler (z. B. Datei noch nicht fertig geschrieben). */
 const RETRY_DELAY_MS = 500;
 const MAX_ATTEMPTS = 3;
+/**
+ * Intervall, in dem geprüft wird, ob der Tag gewechselt hat oder der
+ * heutige Tagesordner inzwischen von der Anlage angelegt wurde.
+ */
+const DAY_CHECK_INTERVAL_MS = 5_000;
+
+/** Laufender File-Monitor. */
+export interface FileMonitor {
+  /** Aktuell überwachter Ordner oder `null`, wenn er noch nicht existiert. */
+  readonly watchDir: string | null;
+  /** Ordner des heutigen Tages (existiert evtl. noch nicht). */
+  readonly todayDir: string;
+  close(): Promise<void>;
+}
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/** Heutiges Datum in lokaler Zeit als YYYYMMDD. */
+export function todayDirName(now: Date = new Date()): string {
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const d = String(now.getDate()).padStart(2, '0');
+  return `${y}${m}${d}`;
+}
+
+/** Vollständiger Pfad zu den JSON-Dateien eines Tagesordners. */
+export function dayDataDir(config: ServerConfig, dayName: string): string {
+  return path.join(config.dataDir, dayName, config.daySubDir);
+}
+
+async function isDirectory(p: string): Promise<boolean> {
+  try {
+    return (await fs.stat(p)).isDirectory();
+  } catch {
+    return false;
+  }
 }
 
 async function readJsonWithRetry(filePath: string): Promise<unknown> {
@@ -61,37 +98,68 @@ async function loadFile(
   }
 }
 
-/** Liest alle vorhandenen Dateien im Quell-Ordner ein. */
-async function loadExisting(config: ServerConfig, store: DataStore) {
-  const entries = await fs.readdir(config.dataDir, { withFileTypes: true });
+/** Liest alle JSON-Dateien eines Ordners ein; liefert [geladen, gesamt]. */
+async function loadDir(
+  store: DataStore,
+  dir: string,
+): Promise<[ok: number, total: number]> {
+  const entries = await fs.readdir(dir, { withFileTypes: true });
   const files = entries
     .filter((e) => e.isFile() && FILE_PATTERN.test(e.name))
-    .map((e) => path.join(config.dataDir, e.name))
+    .map((e) => path.join(dir, e.name))
     .sort();
   let ok = 0;
   for (const file of files) {
     if (await loadFile(store, file, 'Geladen', false)) ok++;
   }
+  return [ok, files.length];
+}
+
+/**
+ * Liest beim Start die Dateien aller Tagesordner `<dataDir>/YYYYMMDD/<daySubDir>`.
+ */
+async function loadAllDays(config: ServerConfig, store: DataStore) {
+  const entries = await fs.readdir(config.dataDir, { withFileTypes: true });
+  const dayNames = entries
+    .filter((e) => e.isDirectory() && DAY_DIR_PATTERN.test(e.name))
+    .map((e) => e.name)
+    .sort();
+
+  let okTotal = 0;
+  let fileTotal = 0;
+  let dirCount = 0;
+  for (const dayName of dayNames) {
+    const dir = dayDataDir(config, dayName);
+    if (!(await isDirectory(dir))) {
+      console.warn(`[monitor] Tagesordner ${dayName}: ${dir} nicht gefunden, übersprungen`);
+      continue;
+    }
+    const [ok, total] = await loadDir(store, dir);
+    console.log(`[monitor] Tag ${dayName}: ${ok} von ${total} Datei(en) geladen`);
+    okTotal += ok;
+    fileTotal += total;
+    dirCount++;
+  }
   console.log(
-    `[monitor] Initial ${ok} von ${files.length} Datei(en) aus ${config.dataDir} geladen`,
+    `[monitor] Initial ${okTotal} von ${fileTotal} Datei(en) aus ${dirCount} Tagesordner(n) unter ${config.dataDir} geladen`,
   );
 }
 
 /**
- * Startet den File-Monitor für `config.dataDir`:
- * vorhandene Dateien werden sofort geladen, danach werden neue, geänderte
- * und gelöschte Dateien laufend in den Store übernommen.
+ * Überwacht einen einzelnen Ordner. Mit `emitExisting` werden bereits
+ * vorhandene Dateien über die `add`-Events geladen (kein Race zwischen
+ * Verzeichnislesen und Watcher-Start).
  */
-export async function startFileMonitor(
+async function watchDir(
   config: ServerConfig,
   store: DataStore,
+  dir: string,
+  emitExisting: boolean,
 ): Promise<FSWatcher> {
-  await fs.mkdir(config.dataDir, { recursive: true });
-  await loadExisting(config, store);
-
-  const watcher = watch(config.dataDir, {
+  let ready = false;
+  const watcher = watch(dir, {
     persistent: true,
-    ignoreInitial: true,
+    ignoreInitial: !emitExisting,
     depth: 0,
     usePolling: config.usePolling,
     interval: config.pollingIntervalMs,
@@ -103,7 +171,9 @@ export async function startFileMonitor(
   });
 
   watcher
-    .on('add', (filePath) => void loadFile(store, filePath, 'Neu', true))
+    .on('add', (filePath) =>
+      void loadFile(store, filePath, ready ? 'Neu' : 'Geladen', ready),
+    )
     .on('change', (filePath) =>
       void loadFile(store, filePath, 'Geändert', true),
     )
@@ -115,11 +185,109 @@ export async function startFileMonitor(
     .on('error', (err) => console.error('[monitor] Fehler:', err));
 
   await new Promise<void>((resolve) => watcher.once('ready', resolve));
+  ready = true;
   console.log(
-    `[monitor] Überwache ${config.dataDir}` +
+    `[monitor] Überwache ${dir}` +
       (config.usePolling
         ? ` (Polling, ${config.pollingIntervalMs} ms)`
         : ' (Dateisystem-Events)'),
   );
   return watcher;
+}
+
+/**
+ * Startet den File-Monitor.
+ *
+ * - Beim Start werden die Dateien aller Tagesordner unter `config.dataDir`
+ *   geladen (`<dataDir>/YYYYMMDD/<daySubDir>/*.json`).
+ * - Überwacht wird nur der Ordner des heutigen Tages. Existiert er noch
+ *   nicht (die Anlage legt ihn beim ersten Durchgang an), wird periodisch
+ *   nachgesehen und der Watcher gestartet, sobald er erscheint.
+ * - Beim Tageswechsel wird auf den neuen Tagesordner umgeschaltet.
+ */
+export async function startFileMonitor(
+  config: ServerConfig,
+  store: DataStore,
+): Promise<FileMonitor> {
+  await fs.mkdir(config.dataDir, { recursive: true });
+  await loadAllDays(config, store);
+
+  let currentDay = todayDirName();
+  let watcher: FSWatcher | null = null;
+  let watchedDir: string | null = null;
+  let waitingLogged = false;
+  let switching = false;
+  let closed = false;
+
+  const stopWatcher = async () => {
+    if (!watcher) return;
+    const w = watcher;
+    watcher = null;
+    watchedDir = null;
+    await w.close();
+  };
+
+  /** Startet den Watcher für `currentDay`, wenn der Ordner existiert. */
+  const ensureWatcher = async (emitExisting: boolean) => {
+    if (closed || watcher) return;
+    const dir = dayDataDir(config, currentDay);
+    if (!(await isDirectory(dir))) {
+      if (!waitingLogged) {
+        console.log(
+          `[monitor] Tagesordner ${dir} existiert noch nicht, warte auf die Schießanlage …`,
+        );
+        waitingLogged = true;
+      }
+      return;
+    }
+    waitingLogged = false;
+    const w = await watchDir(config, store, dir, emitExisting);
+    if (closed) {
+      await w.close();
+      return;
+    }
+    watcher = w;
+    watchedDir = dir;
+  };
+
+  // Beim Start wurden alle Tage bereits geladen -> vorhandene Dateien nicht erneut melden.
+  await ensureWatcher(false);
+
+  const tick = async () => {
+    if (closed || switching) return;
+    switching = true;
+    try {
+      const today = todayDirName();
+      if (today !== currentDay) {
+        console.log(`[monitor] Tageswechsel ${currentDay} -> ${today}`);
+        await stopWatcher();
+        currentDay = today;
+        waitingLogged = false;
+      }
+      // Ordner ist evtl. erst jetzt erschienen: vorhandene Dateien mitnehmen.
+      await ensureWatcher(true);
+    } catch (err) {
+      console.error('[monitor] Fehler beim Prüfen des Tagesordners:', err);
+    } finally {
+      switching = false;
+    }
+  };
+
+  const timer = setInterval(() => void tick(), DAY_CHECK_INTERVAL_MS);
+  // Der Timer soll den Prozess nicht am Beenden hindern (Server hält ihn offen).
+  timer.unref();
+
+  return {
+    get watchDir() {
+      return watchedDir;
+    },
+    get todayDir() {
+      return dayDataDir(config, currentDay);
+    },
+    async close() {
+      closed = true;
+      clearInterval(timer);
+      await stopWatcher();
+    },
+  };
 }

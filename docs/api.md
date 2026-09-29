@@ -204,6 +204,8 @@ Health-Check mit Informationen zum geladenen Datenbestand.
 {
   "status": "ok",
   "dataDir": "/pfad/zu/server/data/raw",
+  "todayDir": "/pfad/zu/server/data/raw/20260929/Exercise/raw",
+  "watchDir": "/pfad/zu/server/data/raw/20260929/Exercise/raw",
   "files": 67,
   "participants": 42
 }
@@ -211,8 +213,10 @@ Health-Check mit Informationen zum geladenen Datenbestand.
 
 | Feld | Bedeutung |
 | --- | --- |
-| `dataDir` | aufgelöster absoluter Pfad des überwachten Ordners |
-| `files` | Anzahl aktuell geladener Dateien (vor Duplikat-Bereinigung) |
+| `dataDir` | aufgelöster absoluter Pfad der Export-Wurzel (`config.json` → `dataDir`) |
+| `todayDir` | erwarteter Ordner des heutigen Tages (`<dataDir>/<YYYYMMDD>/<daySubDir>`) |
+| `watchDir` | aktuell überwachter Ordner; `null`, solange die Anlage den heutigen Tagesordner noch nicht angelegt hat |
+| `files` | Anzahl aktuell geladener Dateien aller Tage (vor Duplikat-Bereinigung) |
 | `participants` | Anzahl unterschiedlicher `MemberId`s |
 
 ---

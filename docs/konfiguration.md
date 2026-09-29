@@ -19,6 +19,7 @@ benötigen keinen neuen Build; der Server liest seine Konfiguration beim Start.
 ```json
 {
   "dataDir": "./data/raw",
+  "daySubDir": "Exercise/raw",
   "usePolling": false,
   "pollingIntervalMs": 1000,
   "eventName": "BSC ScoreBoard",
@@ -28,7 +29,8 @@ benötigen keinen neuen Build; der Server liest seine Konfiguration beim Start.
 
 | Schlüssel | Typ | Standard | Bedeutung |
 | --- | --- | --- | --- |
-| `dataDir` | string | `./data/raw` | Ordner, in den die Schießanlage die `*_ExerciseResultData.json` schreibt. **Relative Pfade beziehen sich auf `server/`**, nicht auf das Arbeitsverzeichnis. Wird beim Start angelegt, falls er fehlt. |
+| `dataDir` | string | `./data/raw` | **Wurzel** des Export-Ordners der Schießanlage. Die Anlage legt darunter pro Tag einen Ordner `YYYYMMDD` an; der Server vervollständigt den Pfad automatisch zu `<dataDir>/<YYYYMMDD>/<daySubDir>`. **Relative Pfade beziehen sich auf `server/`**, nicht auf das Arbeitsverzeichnis. Die Wurzel wird beim Start angelegt, falls sie fehlt. |
+| `daySubDir` | string | `Exercise/raw` | Unterpfad innerhalb eines Tagesordners zu den JSON-Dateien. Backslashes sind erlaubt (`"Exercise\\raw"`). |
 | `usePolling` | boolean | `false` | `true`, wenn der Ordner auf einem Netzlaufwerk (SMB/NFS) liegt, das keine Dateisystem-Events liefert. |
 | `pollingIntervalMs` | number > 0 | `1000` | Abfrageintervall in Millisekunden bei `usePolling`. |
 | `eventName` | string | `BSC ScoreBoard` | Name der Veranstaltung; wird in Client und Live-Board angezeigt. |
@@ -37,25 +39,42 @@ benötigen keinen neuen Build; der Server liest seine Konfiguration beim Start.
 Ungültige Werte fallen einzeln auf den Standard zurück. Fehlt die Datei ganz,
 läuft der Server mit den Standardwerten und protokolliert eine Warnung.
 
+### Ordnerstruktur und Überwachung
+
+```
+C:\temp\RangePrinterExport\           <- dataDir
+├── 20260928\Exercise\raw\*.json      <- wird beim Start gelesen
+└── 20260929\Exercise\raw\*.json      <- heute: wird gelesen UND überwacht
+```
+
+- Beim Start werden **alle** Tagesordner gelesen.
+- Überwacht wird **nur der Ordner des heutigen Tages** (Datum des
+  Server-Rechners, lokale Zeit). Existiert er noch nicht, wartet der Server
+  und prüft alle 5 Sekunden; um Mitternacht wechselt er automatisch auf den
+  neuen Tagesordner.
+
 ### Beispiele
 
-Lokaler Ordner der Anlage unter Windows (absoluter Pfad, Schrägstriche oder
-doppelte Backslashes verwenden):
+Lokaler Export-Ordner der Anlage unter Windows (absoluter Pfad, Schrägstriche
+oder doppelte Backslashes verwenden):
 
 ```json
 {
-  "dataDir": "C:/Artemis/Export/Results",
+  "dataDir": "C:/temp/RangePrinterExport",
   "usePolling": false,
   "eventName": "Vereinsmeisterschaft 2026",
   "rangeName": "BSC Isenbüttel, 10 m"
 }
 ```
 
+Daraus ergibt sich am 29.09.2026 der überwachte Ordner
+`C:\temp\RangePrinterExport\20260929\Exercise\raw`.
+
 Netzlaufwerk mit Polling:
 
 ```json
 {
-  "dataDir": "//ANLAGE-PC/Export/Results",
+  "dataDir": "//ANLAGE-PC/RangePrinterExport",
   "usePolling": true,
   "pollingIntervalMs": 2000
 }
@@ -100,7 +119,9 @@ Wird `PORT` geändert, müssen für die Entwicklung auch die Proxy-Ziele in
 
 Abschließende Schrägstriche werden entfernt. Ist die Datei nicht ladbar,
 gilt `""`. Der Server erlaubt CORS für alle Origins, daher sind keine weiteren
-Einstellungen nötig.
+Einstellungen nötig. Die Adresse **nicht** in `client/src/config.ts`
+eintragen – dort steht nur der Fallback; die Datei `config.json` ist die
+vorgesehene Stelle und wirkt ohne Rebuild.
 
 ## Live-Board: `live_board/public/config.json`
 
@@ -123,6 +144,16 @@ Einstellungen nötig.
 | `scrollSpeedPxPerSec` | number > 0 | `24` | Scrollgeschwindigkeit der Tabelle in Pixel pro Sekunde. |
 | `scrollPauseSec` | number ≥ 0 | `3` | Pause am Anfang und am Ende der Tabelle in Sekunden. |
 | `visibleRows` | integer ≥ 1 | `6` | Anzahl gleichzeitig sichtbarer Tabellenzeilen; bestimmt die Zeilenhöhe (Viewport / `visibleRows`). |
+
+**Wichtig:** Die Server-Adresse gehört in diese Datei, **nicht** in
+`live_board/src/config.ts` (`DEFAULT_CONFIG`). Der Code-Default `""` ist
+nur der Fallback, wenn `config.json` nicht ladbar ist. Bleibt `apiBaseUrl`
+im Dev-Betrieb leer, gehen alle Anfragen über den Vite-Proxy an
+`localhost:4000`; läuft dort kein Server, meldet Vite
+`http proxy error: /api/event … ECONNREFUSED`. Mit gesetzter `apiBaseUrl`
+ruft der Browser den Server direkt auf und der Proxy ist nicht beteiligt.
+Die Datei wird bei jedem Seitenaufruf frisch geladen (`cache: 'no-store'`),
+ein Neustart des Dev-Servers ist nicht nötig.
 
 ### Beispiele
 
@@ -165,12 +196,16 @@ Dev-Servers bzw. einen Rebuild:
 
 ## Checkliste für den Wettkampftag
 
-1. `server/config.json`: `dataDir` auf den Exportordner der Anlage setzen,
-   ggf. `usePolling: true`; `eventName`/`rangeName` anpassen.
-2. Server starten und `GET /api/health` prüfen (`files` steigt, wenn die Anlage
-   schreibt).
-3. `client/dist/config.json` und `live_board/dist/config.json`: `apiBaseUrl`
+1. `server/config.json`: `dataDir` auf die **Wurzel** des Exportordners der
+   Anlage setzen (ohne Tagesordner), ggf. `usePolling: true`;
+   `eventName`/`rangeName` anpassen.
+2. Datum/Uhrzeit des Server-Rechners prüfen – daraus ergibt sich der
+   überwachte Tagesordner.
+3. Server starten und `GET /api/health` prüfen: `watchDir` zeigt den
+   heutigen Ordner, sobald die Anlage ihn angelegt hat; `files` steigt, wenn
+   die Anlage schreibt.
+4. `client/dist/config.json` und `live_board/dist/config.json`: `apiBaseUrl`
    auf die IP des Server-Rechners setzen.
-4. `live_board/dist/config.json`: `dates` auf den/die Wettkampftag(e) setzen
+5. `live_board/dist/config.json`: `dates` auf den/die Wettkampftag(e) setzen
    oder leer lassen.
-5. Browser auf dem Monitor im Kiosk-Modus starten (siehe [Betrieb](betrieb.md)).
+6. Browser auf dem Monitor im Kiosk-Modus starten (siehe [Betrieb](betrieb.md)).

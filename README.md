@@ -11,11 +11,14 @@ Single-Page-Application zur Anzeige von Schießwettkampf-Ergebnissen.
 └── server/       # BSC ScoreBoard Server (Express + TypeScript) – REST API
 ```
 
-Der Server überwacht einen Quell-Ordner, in den die Schießanlage nach jedem
-Durchgang eine `*_ExerciseResultData.json` schreibt (Format siehe `schema.json`),
-liest daraus die Teilnehmer und ihre besten Teiler und stellt die Auswertung als
+Der Server überwacht den Export-Ordner der Schießanlage, in den diese nach
+jedem Durchgang eine `*_ExerciseResultData.json` schreibt (Format siehe
+`schema.json`; Ablage pro Tag unter `<Export>/YYYYMMDD/Exercise/raw/`), liest
+daraus die Teilnehmer und ihre besten Teiler und stellt die Auswertung als
 JSON unter `/api` bereit. Das Frontend konsumiert diese API und rendert das
 3-Spalten-Layout.
+
+Ausführliche Dokumentation: Ordner [`docs/`](docs/index.md) (GitHub Pages).
 
 ## Voraussetzungen
 
@@ -62,6 +65,7 @@ Der Server liest beim Start `server/config.json`:
 ```json
 {
   "dataDir": "./data/raw",
+  "daySubDir": "Exercise/raw",
   "usePolling": false,
   "pollingIntervalMs": 1000,
   "eventName": "BSC ScoreBoard",
@@ -71,17 +75,25 @@ Der Server liest beim Start `server/config.json`:
 
 | Schlüssel | Bedeutung |
 | --- | --- |
-| `dataDir` | Quell-Ordner mit den JSON-Dateien der Schießanlage. Relative Pfade beziehen sich auf `server/`. |
+| `dataDir` | **Wurzel** des Export-Ordners der Schießanlage, z. B. `C:/temp/RangePrinterExport`. Relative Pfade beziehen sich auf `server/`. |
+| `daySubDir` | Unterpfad innerhalb eines Tagesordners (Standard `Exercise/raw`). |
 | `usePolling` | `true`, wenn der Ordner auf einem Netzlaufwerk (SMB/NFS) liegt, auf dem keine Dateisystem-Events ankommen. |
 | `pollingIntervalMs` | Abfrageintervall bei `usePolling`. |
 | `eventName`, `rangeName` | Anzeigenamen im Client. |
 
-Umgebungsvariablen überschreiben die Datei: `DATA_DIR` (Quell-Ordner),
+Umgebungsvariablen überschreiben die Datei: `DATA_DIR` (Export-Wurzel),
 `CONFIG_PATH` (alternative config.json), `PORT` (HTTP-Port, Standard `4000`).
 
-**File-Monitor:** Beim Start werden alle vorhandenen `*.json`-Dateien im
-Quell-Ordner geladen. Danach werden neu erstellte, geänderte und gelöschte
-Dateien automatisch übernommen; die API liefert sofort die aktuellen Daten.
+**Ordnerstruktur:** Die Anlage legt pro Tag einen Ordner `YYYYMMDD` an
+(z. B. `20260929`), darunter `Exercise/raw/` mit den JSON-Dateien. Der Server
+vervollständigt den Pfad selbst: `<dataDir>/<YYYYMMDD>/<daySubDir>`.
+
+**File-Monitor:** Beim Start werden die `*.json`-Dateien **aller**
+Tagesordner geladen. Überwacht wird **nur der Ordner des heutigen Tages**
+(lokale Zeit des Server-Rechners): neu erstellte, geänderte und gelöschte
+Dateien werden automatisch übernommen; die API liefert sofort die aktuellen
+Daten. Existiert der heutige Ordner noch nicht, wartet der Server darauf
+(Prüfung alle 5 s); um Mitternacht wechselt er auf den neuen Tagesordner.
 Dateien ohne die benötigten Felder werden mit einer Warnung im Log übersprungen.
 
 Aus jeder Datei werden verwendet:
@@ -164,7 +176,7 @@ Für den Monitor den Browser im Vollbild-/Kiosk-Modus starten, z. B.
 | `GET` | `/api/event/days/:date/participants` | Tagesstatistik + sortierte Teilnehmerliste |
 | `GET` | `/api/event/all/participants` | Statistik + Teilnehmerliste über alle Tage |
 | `GET` | `/api/participants/:id?date=YYYY-MM-DD` | Detailstatistik eines Teilnehmers |
-| `GET` | `/api/health` | Health-Check (inkl. `dataDir`, Anzahl geladener Dateien/Teilnehmer) |
+| `GET` | `/api/health` | Health-Check (inkl. `dataDir`, `todayDir`, `watchDir`, Anzahl geladener Dateien/Teilnehmer) |
 
 Die Teilnehmerlisten enthalten pro Teilnehmer `bestTeiler`, `secondBestTeiler`,
 `teilerSum` (Summe aus bestem und zweitbestem Teiler) und `teilerCount`

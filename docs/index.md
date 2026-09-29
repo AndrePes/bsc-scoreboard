@@ -14,7 +14,7 @@ Das Projekt besteht aus drei eigenständigen Applikationen:
 
 | Applikation | Ordner | Zweck |
 | --- | --- | --- |
-| [Server](server.md) | `server/` | REST-API; überwacht den Datenordner der Schießanlage und stellt die Auswertung bereit |
+| [Server](server.md) | `server/` | REST-API; liest alle Tagesordner des Export-Ordners der Schießanlage, überwacht den heutigen und stellt die Auswertung bereit |
 | [Client](client.md) | `client/` | Web-Oberfläche für die Wettkampfleitung: Tagesauswahl, Rangliste, Teilnehmerdetails, PDF-Export |
 | [Live-Board](live-board.md) | `live_board/` | Vollbild-Ansicht für Monitore am Schießstand: Top 5 als Kacheln, automatisch scrollende Tabelle |
 
@@ -54,8 +54,10 @@ npm run dev:live     # http://localhost:5174  (Live-Board)
 ```
 
 Ohne weitere Konfiguration verwendet der Server die Beispieldaten aus
-`server/data/raw/`. Für den Wettkampfbetrieb wird in `server/config.json`
-der Ordner eingetragen, in den die Schießanlage schreibt
+`server/data/raw/20260904/Exercise/raw/`. Für den Wettkampfbetrieb wird in
+`server/config.json` die Wurzel des Export-Ordners der Schießanlage
+eingetragen (z. B. `C:/temp/RangePrinterExport`); den Tagesordner
+`YYYYMMDD/Exercise/raw` ergänzt der Server selbst
 (siehe [Konfiguration](konfiguration.md)).
 
 ## Zentrale Begriffe
@@ -64,7 +66,8 @@ der Ordner eingetragen, in den die Schießanlage schreibt
 | --- | --- |
 | **Teiler** | Abstand des Schusses vom Zentrum der Scheibe. Die Anlage liefert Meter, das System rechnet in **1/100 mm** um (eine Nachkommastelle). **Kleiner ist besser.** |
 | **Durchgang** | Eine Schießserie eines Teilnehmers = eine JSON-Datei der Anlage. Jede Datei liefert die **3 besten Teiler** des Durchgangs. |
-| **Veranstaltungstag** | Wird aus dem Datum von `LastShot.TimeStamp` abgeleitet. Es gibt keine feste Tagesliste. |
+| **Veranstaltungstag** | Wird aus dem Datum von `LastShot.TimeStamp` abgeleitet (nicht aus dem Ordnernamen). Es gibt keine feste Tagesliste. |
+| **Tagesordner** | Ordner `YYYYMMDD` (z. B. `20260929`), den die Anlage pro Tag unter dem Export-Ordner anlegt; die Dateien liegen darunter in `Exercise/raw/`. Der Server überwacht nur den Tagesordner des heutigen Datums. |
 | **Bester / zweitbester Teiler** | Die beiden kleinsten Teiler-Werte eines Teilnehmers (pro Tag oder über alle Tage). |
 | **Summe (`teilerSum`)** | Bester + zweitbester Teiler. Sortierkriterium im Live-Board. |
 | **Anzahl (`teilerCount`)** | Anzahl gewerteter Teiler-Werte (nicht Schüsse). |

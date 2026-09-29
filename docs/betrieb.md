@@ -24,21 +24,29 @@ npm run dev:live     # Vite, Port 5174, Proxy /api -> :4000
 - Die Frontends nutzen Vite Hot Module Replacement.
 - In der Entwicklung bleibt `apiBaseUrl` leer; der Vite-Proxy leitet `/api`
   an den Server weiter.
-- Ohne Konfigurationsänderung werden die Beispieldaten aus `server/data/raw/`
-  geladen (67 Dateien, ein Veranstaltungstag).
+- Ohne Konfigurationsänderung werden die Beispieldaten aus
+  `server/data/raw/20260904/Exercise/raw/` geladen (67 Dateien, ein
+  Veranstaltungstag). Da kein Ordner für den heutigen Tag existiert, meldet
+  der Server `Tagesordner … existiert noch nicht, warte auf die Schießanlage …`
+  – das ist im Dev-Betrieb normal.
 
 ### Neue Dateien simulieren
 
-Um das Live-Verhalten zu testen, eine Beispieldatei kopieren:
+Um das Live-Verhalten zu testen, den heutigen Tagesordner anlegen und eine
+Beispieldatei hineinkopieren:
 
 ```bash
-cp server/data/raw/20260904-184337_2_179016_ExerciseResultData.json \
-   server/data/raw/test_ExerciseResultData.json
+TODAY=$(date +%Y%m%d)
+mkdir -p server/data/raw/$TODAY/Exercise/raw
+cp server/data/raw/20260904/Exercise/raw/20260904-184337_2_179016_ExerciseResultData.json \
+   server/data/raw/$TODAY/Exercise/raw/test_ExerciseResultData.json
 ```
 
-Der Server protokolliert `[monitor] Neu: …` (beachte: gleiche `Id` → Duplikat,
-die Datei mit dem kleineren Pfad gewinnt). Löschen der Datei erzeugt
-`[monitor] Entfernt: …`.
+Innerhalb von 5 s erkennt der Server den neuen Ordner
+(`[monitor] Überwache …/<heute>/Exercise/raw`) und lädt die Datei. Weitere
+Kopien protokolliert er als `[monitor] Neu: …` (beachte: gleiche `Id` →
+Duplikat, die Datei mit dem kleineren Pfad gewinnt). Löschen erzeugt
+`[monitor] Entfernt: …`. Den Testordner anschließend wieder entfernen.
 
 ## Production-Build
 
@@ -100,7 +108,7 @@ After=network.target
 WorkingDirectory=/opt/bsc-scoreboard/server
 ExecStart=/usr/bin/node dist/index.js
 Environment=PORT=4000
-Environment=DATA_DIR=/mnt/anlage/results
+Environment=DATA_DIR=/mnt/anlage/RangePrinterExport
 Restart=on-failure
 User=scoreboard
 
@@ -114,7 +122,9 @@ journalctl -u bsc-scoreboard -f
 ```
 
 Ein Neustart ist unkritisch: Der Server baut seinen Zustand beim Start
-vollständig aus dem Datenordner neu auf.
+vollständig aus allen Tagesordnern des Export-Ordners neu auf. Bei einem
+mehrtägigen Wettkampf kann der Server durchlaufen – um Mitternacht wechselt
+er selbstständig auf den neuen Tagesordner, die Vortage bleiben geladen.
 
 ## Frontends bereitstellen
 
@@ -224,6 +234,7 @@ Empfehlungen:
 | Prüfung | Befehl / Ort |
 | --- | --- |
 | Server erreichbar, Dateien geladen | `curl http://<server>:4000/api/health` |
+| Heutiger Tagesordner wird überwacht | `/api/health` → `watchDir` ist nicht `null` und entspricht `todayDir` |
 | Neue Datei erkannt | Server-Log `[monitor] Neu: …` |
 | Datei übersprungen | Server-Log `[monitor] … übersprungen: <Grund>` |
 | Live-Board hat Verbindung | Header zeigt `Letzte Aktualisierung HH:MM:SS`, kein rotes `Verbindungsfehler`-Badge |
@@ -233,8 +244,10 @@ Empfehlungen:
 
 | Störung | Maßnahme |
 | --- | --- |
-| Neue Durchgänge erscheinen nicht | Liegt `dataDir` auf einem Netzlaufwerk? → `usePolling: true`. Schreibt die Anlage in einen Unterordner? → Watcher überwacht nur die oberste Ebene. |
+| Neue Durchgänge erscheinen nicht | `/api/health` → `watchDir` prüfen: `null` heißt, der heutige Tagesordner (`todayDir`) existiert nicht – stimmen Datum des Server-Rechners und Ordnername der Anlage überein? Zeigt `dataDir` auf die **Wurzel** (nicht auf einen Tagesordner)? Netzlaufwerk → `usePolling: true`. |
+| `watchDir` zeigt auf den falschen Tag | Datum/Zeitzone des Server-Rechners korrigieren; der Server wechselt innerhalb von 5 s auf den richtigen Ordner. |
 | Live-Board zeigt `Verbindungsfehler` | `apiBaseUrl` in `dist/config.json` prüfen; Firewall auf Port 4000; Server läuft? |
+| Vite meldet `http proxy error: /api/event … ECONNREFUSED` | `apiBaseUrl` ist leer, daher geht die Anfrage über den Dev-Proxy an `localhost:4000`, wo kein Server läuft. Entweder `npm run dev:server` starten oder `apiBaseUrl` in `public/config.json` (nicht in `src/config.ts`) auf den Server-Rechner setzen. |
 | Teilnehmer fehlt in der Rangliste | Server-Log auf `übersprungen` prüfen (fehlende `MemberId`, `LastShot`, `Teilers`). |
 | Tag fehlt in der Sidebar | Datum stammt aus `LastShot.TimeStamp`; Uhrzeit/Zeitzone der Anlage prüfen. |
 | Ranglisten von Client und Live-Board unterscheiden sich | Gewollt: Client sortiert nach bestem Teiler, Live-Board nach Summe. |

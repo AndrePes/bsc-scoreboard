@@ -11,13 +11,14 @@ Server ist die einzige Komponente mit Zugriff auf die Daten der Schießanlage;
 beide Frontends kommunizieren ausschließlich über die REST-API.
 
 ```
-+---------------------------+
-|  Schießanlage (Artemis)   |
-|  schreibt pro Durchgang   |
-|  *_ExerciseResultData.json|
-+-------------+-------------+
-              |  Dateisystem (lokal oder Netzlaufwerk)
-              v
++----------------------------------------+
+|  Schießanlage (Artemis)                |
+|  schreibt pro Durchgang                |
+|  <Export>/YYYYMMDD/Exercise/raw/       |
+|      *_ExerciseResultData.json         |
++-------------------+--------------------+
+                    |  Dateisystem (lokal oder Netzlaufwerk)
+                    v
 +---------------------------------------------------------------+
 |  server/  (Node.js, Express)                        Port 4000  |
 |                                                               |
@@ -47,10 +48,12 @@ beide Frontends kommunizieren ausschließlich über die REST-API.
 
 ### Server (`server/`)
 
-Express-Anwendung in TypeScript (ESM). Beim Start werden alle JSON-Dateien im
-konfigurierten Datenordner geladen; anschließend überwacht ein
-chokidar-Watcher den Ordner und übernimmt neue, geänderte und gelöschte
-Dateien sofort in den In-Memory-Store. Es gibt **keine Datenbank** – der
+Express-Anwendung in TypeScript (ESM). Beim Start werden die JSON-Dateien
+**aller Tagesordner** (`<dataDir>/YYYYMMDD/Exercise/raw`) geladen;
+anschließend überwacht ein chokidar-Watcher **nur den Ordner des heutigen
+Tages** und übernimmt neue, geänderte und gelöschte Dateien sofort in den
+In-Memory-Store. Fehlt der heutige Ordner noch, wartet der Server auf sein
+Erscheinen; um Mitternacht wechselt er auf den nächsten Tagesordner. Es gibt **keine Datenbank** – der
 Datenordner der Schießanlage ist die einzige Quelle der Wahrheit, der Store
 kann jederzeit aus den Dateien neu aufgebaut werden.
 
@@ -60,7 +63,7 @@ Module (`server/src/`):
 | --- | --- |
 | `index.ts` | Einstieg, Express-App, Routen, Berechnung der Ranglisten und Statistiken |
 | `config.ts` | Lädt `config.json`, wertet Umgebungsvariablen aus, löst Pfade auf |
-| `watcher.ts` | Initiales Laden, chokidar-Watcher, Retry beim Lesen, Logging |
+| `watcher.ts` | Initiales Laden aller Tagesordner, chokidar-Watcher für den heutigen Tagesordner (inkl. Warten auf dessen Anlegen und Tageswechsel), Retry beim Lesen, Logging |
 | `parser.ts` | Validiert Rohdateien und bildet sie auf das interne Modell ab |
 | `store.ts` | `DataStore`: Sessions pro Datei, Duplikat-Erkennung, Aufbau von `EventData` |
 | `types.ts` | Rohformat (PascalCase) und internes Modell |
@@ -89,10 +92,11 @@ Details: [Live-Board](live-board.md).
 
 1. Die Schießanlage schreibt nach einem Durchgang
    `YYYYMMDD-HHMMSS_<Stand>_<MemberId>_ExerciseResultData.json` in den
-   Datenordner.
-2. chokidar meldet `add` (bzw. `change`). Der Watcher wartet über
-   `awaitWriteFinish` (500 ms Stabilität), bis die Datei vollständig
-   geschrieben ist, und liest sie mit bis zu drei Versuchen.
+   Tagesordner `<dataDir>/<YYYYMMDD>/Exercise/raw/`.
+2. chokidar (überwacht nur den heutigen Tagesordner) meldet `add` bzw.
+   `change`. Der Watcher wartet über `awaitWriteFinish` (500 ms Stabilität),
+   bis die Datei vollständig geschrieben ist, und liest sie mit bis zu drei
+   Versuchen.
 3. `parseExerciseResult()` prüft die Pflichtfelder, rechnet die Teiler von
    Metern in 1/100 mm um und erzeugt ein `SessionResult` (Teilnehmer, Datum,
    sortierte Teiler-Liste, Quelldatei).
@@ -163,4 +167,6 @@ drei Paketen.
 - Der Server liefert **keine** statischen Frontend-Dateien aus; Client und
   Live-Board benötigen einen eigenen Webserver oder den Vite-Dev-Server
   (siehe [Betrieb](betrieb.md)).
-- Der Watcher überwacht nur die oberste Ebene des Datenordners (`depth: 0`).
+- Der Watcher überwacht nur den heutigen Tagesordner (lokale Zeit des
+  Server-Rechners). Nachträglich in ältere Tagesordner geschriebene Dateien
+  werden erst beim nächsten Serverstart gelesen.

@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { loadConfig } from './config.js';
 import { DataStore } from './store.js';
-import { startFileMonitor } from './watcher.js';
+import { startFileMonitor, type FileMonitor } from './watcher.js';
 import type { EventDay, Participant, TeilerResult } from './types.js';
 
 const config = loadConfig();
@@ -166,17 +166,23 @@ app.get('/api/participants/:id', (req, res) => {
   });
 });
 
+let monitor: FileMonitor | null = null;
+
 app.get('/api/health', (_req, res) => {
   res.json({
     status: 'ok',
     dataDir: config.dataDir,
+    /** Ordner des heutigen Tages (`<dataDir>/YYYYMMDD/<daySubDir>`). */
+    todayDir: monitor?.todayDir ?? null,
+    /** Aktuell überwachter Ordner; null, solange der Tagesordner fehlt. */
+    watchDir: monitor?.watchDir ?? null,
     files: store.fileCount,
     participants: store.getEventData().participants.length,
   });
 });
 
 async function main() {
-  await startFileMonitor(config, store);
+  monitor = await startFileMonitor(config, store);
   app.listen(PORT, () => {
     console.log(`BSC ScoreBoard Server listening on http://localhost:${PORT}`);
   });
