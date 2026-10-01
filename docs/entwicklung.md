@@ -164,8 +164,6 @@ Hilfreich zu wissen, bevor man an den entsprechenden Stellen arbeitet:
   `encodeURIComponent` (Live-Board tut es). Für `YYYY-MM-DD` unkritisch.
 - Client-Fetches setzen kein `cache: 'no-store'`; das Live-Board schon.
 - `ResultValid` aus `ParameterResults` wird typisiert, aber nicht geprüft.
-- Der Doc-Kommentar zu `LiveBoardData.ranking` („aufsteigend nach bestem
-  Teiler“) ist veraltet – sortiert wird nach Summe.
 - `tsconfig.json` der Frontends referenziert `tsconfig.node.json` nicht;
   `vite.config.ts` wird von `tsc -b` nicht geprüft.
 - `PORT` wird nicht validiert (`PORT=abc` → `NaN`).

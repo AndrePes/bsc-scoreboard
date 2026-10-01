@@ -124,6 +124,15 @@ Diese Regeln sind an mehreren Stellen im Code verankert und müssen bei
   `0.00034177 m` → `34.2`.
 - **Jede Datei liefert nur ihre 3 besten Teiler.** `teilerCount` zählt daher
   Teiler-Werte, nicht Schüsse.
+- **Tagesbestwert-Regel für die Gesamtansicht:** In der Tagesansicht sind
+  „Bester“ und „2. Teiler“ die zwei besten Schüsse des Tages. In der
+  Gesamtansicht zählt pro Tag nur der Tagesbestwert; hat ein Teilnehmer an
+  mehreren Tagen geschossen, sind Bester und Zweiter die zwei kleinsten
+  Tagesbestwerte (also aus verschiedenen Tagen) und die Summe deren Addition.
+  Hat er nur an einem Tag geschossen, gelten die zwei besten Schüsse dieses
+  Tages. Implementiert in `pickBestTwo()` (`server/src/index.ts`) und
+  gleichlautend in `mergeRankings()` (`live_board/src/api.ts`). Jeder
+  Listeneintrag trägt deshalb `bestTeilerDate` und `secondBestTeilerDate`.
 - **Tage werden abgeleitet**, nicht konfiguriert: Datumsanteil von
   `LastShot.TimeStamp` (lokale Zeit der Anlage, Offset wird ignoriert). Label
   `Tag N - DD.MM.YYYY`, N = Position in der sortierten Tagesliste.

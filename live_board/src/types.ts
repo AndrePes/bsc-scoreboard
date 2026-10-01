@@ -18,8 +18,15 @@ export interface ParticipantListEntry {
   club?: string;
   rank: number;
   bestTeiler: number;
-  /** Zweitbester Teiler, null bei nur einem Wert. */
+  /** Tag (YYYY-MM-DD) des besten Teilers. */
+  bestTeilerDate: string;
+  /**
+   * Zweitbester Teiler, null bei nur einem Wert. Über mehrere Tage der
+   * zweitbeste Tagesbestwert (anderer Tag als bestTeiler).
+   */
   secondBestTeiler: number | null;
+  /** Tag des zweitbesten Teilers, null wenn kein zweiter Wert. */
+  secondBestTeilerDate: string | null;
   /** Summe aus bestem und zweitbestem Teiler, null wenn kein zweiter Wert. */
   teilerSum: number | null;
   /** Anzahl gewerteter Teiler-Werte. */
@@ -52,7 +59,7 @@ export interface LiveBoardData {
   rangeName: string;
   /** Beschreibung des angezeigten Zeitraums, z. B. "Alle Tage". */
   periodLabel: string;
-  /** Rangliste, aufsteigend nach bestem Teiler, rank ab 1. */
+  /** Rangliste, aufsteigend nach Summe (bester + zweitbester Teiler), rank ab 1. */
   ranking: ParticipantListEntry[];
   loadedAt: Date;
 }

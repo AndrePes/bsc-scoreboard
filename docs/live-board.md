@@ -139,14 +139,23 @@ aufsteigend:
 
 ### Zusammenführen mehrerer Tage (`mergeRankings`)
 
-Für jeden Teilnehmer werden aus allen Tages-Antworten `bestTeiler` und
-`secondBestTeiler` gesammelt, `teilerCount` aufsummiert und Name/Verein des
-späteren Tages übernommen. Aus der gesammelten Liste ergeben sich der neue
-beste und zweitbeste Teiler sowie die Summe; danach `rankBySum`.
+Für jeden Teilnehmer werden die Tages-Einträge gesammelt, `teilerCount`
+aufsummiert und Name/Verein des späteren Tages übernommen. Bester und
+zweitbester Teiler folgen der **Tagesbestwert-Regel** – identisch zur
+Server-Gesamtansicht (`/api/event/all/participants`), damit Client und
+Live-Board dieselben Werte zeigen:
 
-Das funktioniert nur, weil jeder Listeneintrag der API den besten **und**
-zweitbesten Teiler enthält: Die beiden besten Werte über mehrere Tage sind
-immer in der Vereinigung der Tages-Top-2 enthalten.
+| Tage, an denen der Teilnehmer geschossen hat | Bester | 2. Teiler |
+| --- | --- | --- |
+| 1 | `bestTeiler` des Tages | `secondBestTeiler` desselben Tages |
+| ≥ 2 | kleinster `bestTeiler` über die Tage | zweitkleinster `bestTeiler` (anderer Tag) |
+
+`bestTeilerDate` / `secondBestTeilerDate` werden entsprechend übernommen,
+`teilerSum` ist die Summe beider Werte; danach `rankBySum`.
+
+Die Regel benötigt pro Tag nur den Tagesbestwert sowie – für den
+Ein-Tages-Fall – den zweitbesten Wert desselben Tages; beides liefert jeder
+Listeneintrag der API.
 
 ### Konfigurationsvalidierung (`config.ts`)
 

@@ -16,9 +16,16 @@ export interface ParticipantListEntry {
   club?: string;
   rank: number;
   bestTeiler: number;
-  /** Zweitbester Teiler, null bei nur einem Schuss. */
+  /** Tag (YYYY-MM-DD) des besten Teilers. */
+  bestTeilerDate: string;
+  /**
+   * Zweitbester Teiler, null bei nur einem Wert. In der Gesamtansicht bei
+   * mehreren Tagen der zweitbeste Tagesbestwert (anderer Tag als bestTeiler).
+   */
   secondBestTeiler: number | null;
-  /** Summe aus bestem und zweitbestem Teiler, null wenn kein zweiter Schuss. */
+  /** Tag des zweitbesten Teilers, null wenn kein zweiter Wert. */
+  secondBestTeilerDate: string | null;
+  /** Summe aus bestem und zweitbestem Teiler, null wenn kein zweiter Wert. */
   teilerSum: number | null;
   /** Anzahl gewerteter Teiler-Werte. */
   teilerCount: number;
@@ -50,6 +57,23 @@ export interface StatPair {
   teilerCount: number;
 }
 
+/** Gesamtwertung über alle Tage (gleiche Regel wie die Gesamt-Rangliste). */
+export interface AllDaysStats extends StatPair {
+  bestTeilerDate: string | null;
+  secondBestTeiler: number | null;
+  secondBestTeilerDate: string | null;
+  teilerSum: number | null;
+}
+
+/** Bestwerte eines Teilnehmers an einem Tag. */
+export interface ParticipantDayStats {
+  date: string;
+  label: string;
+  bestTeiler: number;
+  secondBestTeiler: number | null;
+  teilerCount: number;
+}
+
 export interface ParticipantDetail {
   id: string;
   firstName: string;
@@ -57,5 +81,7 @@ export interface ParticipantDetail {
   club?: string;
   selectedDay: string | null;
   selectedDayStats: StatPair;
-  allDaysStats: StatPair;
+  allDaysStats: AllDaysStats;
+  /** Tage mit Werten, chronologisch. */
+  days: ParticipantDayStats[];
 }

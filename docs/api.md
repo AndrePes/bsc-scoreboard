@@ -35,17 +35,33 @@ interface TopTeiler {
 }
 
 interface ParticipantListEntry {
-  id: string;                        // MemberId
+  id: string;                          // MemberId
   firstName: string;
   lastName: string;
-  club?: string;                     // fehlt, wenn kein Verein hinterlegt
-  rank: number;                      // 1-basiert, nach bestTeiler aufsteigend
+  club?: string;                       // fehlt, wenn kein Verein hinterlegt
+  rank: number;                        // 1-basiert, nach bestTeiler aufsteigend
   bestTeiler: number;
-  secondBestTeiler: number | null;   // null bei nur einem Wert
-  teilerSum: number | null;          // best + second, null bei nur einem Wert
-  teilerCount: number;               // Anzahl gewerteter Teiler-Werte
+  bestTeilerDate: string;              // Tag des besten Teilers (YYYY-MM-DD)
+  secondBestTeiler: number | null;     // null bei nur einem Wert
+  secondBestTeilerDate: string | null; // Tag des zweitbesten Teilers
+  teilerSum: number | null;            // best + second, null bei nur einem Wert
+  teilerCount: number;                 // Anzahl gewerteter Teiler-Werte
 }
+```
 
+### Regel für Bester / 2. Teiler / Summe
+
+| Sicht | `bestTeiler` | `secondBestTeiler` |
+| --- | --- | --- |
+| Ein Tag (`/days/:date/…`) | bester Schuss des Tages | zweitbester Schuss **desselben** Tages |
+| Alle Tage (`/all/…`), Teilnehmer hat an **einem** Tag geschossen | bester Schuss dieses Tages | zweitbester Schuss dieses Tages |
+| Alle Tage, Teilnehmer hat an **mehreren** Tagen geschossen | kleinster **Tagesbestwert** | zweitkleinster Tagesbestwert (immer ein **anderer** Tag) |
+
+Beispiel: Teiler 29.9 und 35.0 am 12.09., 43.9 am 14.09. → Tagesansicht
+12.09.: 29.9 / 35.0 / Summe 64.9; Gesamtansicht: 29.9 (12.09.) / 43.9
+(14.09.) / Summe 73.8.
+
+```ts
 interface DayStats {
   participantCount: number;
   bestTeiler: TopTeiler | null;
@@ -107,7 +123,9 @@ Tagesstatistik und sortierte Teilnehmerliste für einen Tag.
       "lastName": "Meyer",
       "rank": 1,
       "bestTeiler": 12.3,
+      "bestTeilerDate": "2026-09-04",
       "secondBestTeiler": 18.0,
+      "secondBestTeilerDate": "2026-09-04",
       "teilerSum": 30.3,
       "teilerCount": 6
     }
@@ -134,8 +152,11 @@ Hinweise:
 
 ## `GET /api/event/all/participants`
 
-Wie der Tages-Endpunkt, jedoch über **alle Tage** aggregiert. Pro Teilnehmer
-werden alle Teiler aller Tage zusammengefasst.
+Wie der Tages-Endpunkt, jedoch über **alle Tage** aggregiert. `teilerCount`
+und die Top-3-`stats` berücksichtigen alle Teiler aller Tage; `bestTeiler`,
+`secondBestTeiler` und `teilerSum` folgen der Tagesbestwert-Regel (siehe
+oben): bei mehreren Tagen stammen Bester und Zweiter aus **verschiedenen**
+Tagen.
 
 **Antwort `200`** (`DayParticipantsResponse`) mit
 
@@ -162,12 +183,23 @@ Tage.
 
 ```json
 {
-  "id": "179016",
-  "firstName": "Bernd",
-  "lastName": "Meyer",
-  "selectedDay": "2026-09-04",
-  "selectedDayStats": { "bestTeiler": 12.3, "teilerCount": 6 },
-  "allDaysStats":     { "bestTeiler": 12.3, "teilerCount": 9 }
+  "id": "1001",
+  "firstName": "Marc",
+  "lastName": "Valentin",
+  "selectedDay": "2026-09-12",
+  "selectedDayStats": { "bestTeiler": 29.9, "teilerCount": 3 },
+  "allDaysStats": {
+    "bestTeiler": 29.9,
+    "teilerCount": 6,
+    "bestTeilerDate": "2026-09-12",
+    "secondBestTeiler": 43.9,
+    "secondBestTeilerDate": "2026-09-14",
+    "teilerSum": 73.8
+  },
+  "days": [
+    { "date": "2026-09-12", "label": "Tag 1 - 12.09.2026", "bestTeiler": 29.9, "secondBestTeiler": 35.0, "teilerCount": 3 },
+    { "date": "2026-09-14", "label": "Tag 2 - 14.09.2026", "bestTeiler": 43.9, "secondBestTeiler": 60.0, "teilerCount": 3 }
+  ]
 }
 ```
 
@@ -179,10 +211,26 @@ interface ParticipantDetail {
   club?: string;
   selectedDay: string | null;                  // Echo von ?date, sonst null
   selectedDayStats: { bestTeiler: number | null; teilerCount: number };
-  allDaysStats:     { bestTeiler: number | null; teilerCount: number };
+  allDaysStats: {
+    bestTeiler: number | null;
+    teilerCount: number;
+    bestTeilerDate: string | null;             // Tag des besten Teilers
+    secondBestTeiler: number | null;           // nach Tagesbestwert-Regel
+    secondBestTeilerDate: string | null;
+    teilerSum: number | null;
+  };
+  days: Array<{                                // Tage mit Werten, chronologisch
+    date: string;
+    label: string;                             // "Tag N - DD.MM.YYYY"
+    bestTeiler: number;
+    secondBestTeiler: number | null;
+    teilerCount: number;
+  }>;
 }
 ```
 
+`allDaysStats` wird nach derselben Regel berechnet wie die Gesamt-Rangliste
+(`/api/event/all/participants`), sodass Rangliste und Details übereinstimmen.
 Ohne `date` (oder mit `date=all`) ist `selectedDayStats`
 `{ "bestTeiler": null, "teilerCount": 0 }`.
 

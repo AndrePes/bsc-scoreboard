@@ -13,9 +13,25 @@ function fmt(value: number | null): string {
   return value.toFixed(1);
 }
 
+/** "2026-09-12" -> "12.09.2026" */
+function fmtDate(date: string | null): string {
+  if (!date) return '';
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
+  return m ? `${m[3]}.${m[2]}.${m[1]}` : date;
+}
+
+/** Teiler mit Datum des Schusses, z. B. "29.9 · 12.09.2026". */
+function fmtWithDate(value: number | null, date: string | null): string {
+  if (value === null || value === undefined) return '–';
+  const d = fmtDate(date);
+  return d ? `${fmt(value)} · ${d}` : fmt(value);
+}
+
 interface Row {
   label: string;
   value: string;
+  /** Hebt die Zeile hervor (z. B. Tage, die in die Gesamtwertung eingehen). */
+  highlight?: boolean;
 }
 
 function DescriptionList({ rows }: { rows: Row[] }) {
@@ -26,7 +42,7 @@ function DescriptionList({ rows }: { rows: Row[] }) {
           key={row.label}
           className={`flex items-baseline justify-between gap-4 px-4 py-3 text-sm ${
             idx !== rows.length - 1 ? 'border-b border-slate-100' : ''
-          }`}
+          } ${row.highlight ? 'bg-emerald-50' : ''}`}
         >
           <dt className="text-slate-500">{row.label}</dt>
           <dd className="text-right font-medium text-slate-800">{row.value}</dd>
@@ -101,31 +117,71 @@ export function DetailsColumn({
         )}
 
         {participantId && data && (
-          <DescriptionList
-            rows={[
-              {
-                label: 'Vorname, Nachname',
-                value: `${data.firstName} ${data.lastName}`,
-              },
-              { label: 'ID', value: data.id },
-              {
-                label: 'Bester Schuss/Teiler (Ausgewählter Tag)',
-                value: fmt(data.selectedDayStats.bestTeiler),
-              },
-              {
-                label: 'Anzahl gewerteter Teiler (Ausgewählter Tag)',
-                value: String(data.selectedDayStats.teilerCount),
-              },
-              {
-                label: 'Bester Schuss/Teiler (Alle Tage)',
-                value: fmt(data.allDaysStats.bestTeiler),
-              },
-              {
-                label: 'Anzahl gewerteter Teiler (Alle Tage)',
-                value: String(data.allDaysStats.teilerCount),
-              },
-            ]}
-          />
+          <div className="space-y-6">
+            <DescriptionList
+              rows={[
+                {
+                  label: 'Vorname, Nachname',
+                  value: `${data.firstName} ${data.lastName}`,
+                },
+                { label: 'ID', value: data.id },
+                ...(data.selectedDay
+                  ? [
+                      {
+                        label: 'Bester Schuss/Teiler (Ausgewählter Tag)',
+                        value: fmt(data.selectedDayStats.bestTeiler),
+                      },
+                      {
+                        label: 'Anzahl gewerteter Teiler (Ausgewählter Tag)',
+                        value: String(data.selectedDayStats.teilerCount),
+                      },
+                    ]
+                  : []),
+                {
+                  label: 'Bester Teiler (Alle Tage)',
+                  value: fmtWithDate(
+                    data.allDaysStats.bestTeiler,
+                    data.allDaysStats.bestTeilerDate,
+                  ),
+                },
+                {
+                  label: '2. Teiler (Alle Tage)',
+                  value: fmtWithDate(
+                    data.allDaysStats.secondBestTeiler,
+                    data.allDaysStats.secondBestTeilerDate,
+                  ),
+                },
+                {
+                  label: 'Summe (Alle Tage)',
+                  value: fmt(data.allDaysStats.teilerSum),
+                },
+                {
+                  label: 'Anzahl gewerteter Teiler (Alle Tage)',
+                  value: String(data.allDaysStats.teilerCount),
+                },
+              ]}
+            />
+
+            {data.days.length > 0 && (
+              <div>
+                <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  Bestwerte pro Tag
+                </h3>
+                <DescriptionList
+                  rows={data.days.map((d) => ({
+                    label: d.label,
+                    value: `${fmt(d.bestTeiler)} · ${d.teilerCount} Teiler`,
+                    highlight:
+                      d.date === data.allDaysStats.bestTeilerDate ||
+                      d.date === data.allDaysStats.secondBestTeilerDate,
+                  }))}
+                />
+                <p className="mt-2 text-xs text-slate-500">
+                  Hervorgehobene Tage gehen in die Gesamtwertung ein.
+                </p>
+              </div>
+            )}
+          </div>
         )}
       </div>
     </section>

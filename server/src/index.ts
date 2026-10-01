@@ -21,8 +21,12 @@ interface ParticipantStats {
   club?: string;
   rank: number;
   bestTeiler: number;
+  /** Tag (YYYY-MM-DD), an dem der beste Teiler geschossen wurde. */
+  bestTeilerDate: string;
   /** Zweitbester Teiler des Teilnehmers, null bei nur einem Wert. */
   secondBestTeiler: number | null;
+  /** Tag des zweitbesten Teilers, null wenn kein zweiter Wert. */
+  secondBestTeilerDate: string | null;
   /** Summe aus bestem und zweitbestem Teiler, null wenn kein zweiter Wert. */
   teilerSum: number | null;
   /** Anzahl gewerteter Teiler-Werte. */
@@ -35,6 +39,18 @@ interface TopTeiler {
   participantId: string;
   firstName: string;
   lastName: string;
+}
+
+/** Ein Teiler-Wert mit dem Tag, an dem er geschossen wurde. */
+interface DatedTeiler {
+  teiler: number;
+  date: string;
+}
+
+/** Bester und zweitbester Teiler eines Teilnehmers für den betrachteten Zeitraum. */
+interface BestTwo {
+  best: DatedTeiler;
+  second: DatedTeiler | null;
 }
 
 function computeBestTeiler(results: TeilerResult[]): number {
@@ -51,6 +67,46 @@ function allTeilers(p: Participant): TeilerResult[] {
   return Object.values(p.teilersByDay).flat();
 }
 
+function round2(value: number): number {
+  return Math.round(value * 100) / 100;
+}
+
+/** Nur die Tage mit mindestens einem Wert, nach Datum sortiert. */
+function daysWithResults(
+  byDay: Record<string, TeilerResult[]>,
+): Array<[date: string, results: TeilerResult[]]> {
+  return Object.entries(byDay)
+    .filter(([, results]) => results.length > 0)
+    .sort(([a], [b]) => a.localeCompare(b));
+}
+
+/**
+ * Ermittelt besten und zweitbesten Teiler über die übergebenen Tage.
+ *
+ * - Genau ein Tag: bester und zweitbester Schuss dieses Tages (Tagesansicht).
+ * - Mehrere Tage: pro Tag zählt nur der Tagesbestwert; Bester und Zweiter
+ *   sind die zwei kleinsten Tagesbestwerte und stammen damit immer von
+ *   verschiedenen Tagen (Gesamtansicht).
+ */
+function pickBestTwo(byDay: Record<string, TeilerResult[]>): BestTwo | null {
+  const days = daysWithResults(byDay);
+  if (days.length === 0) return null;
+
+  if (days.length === 1) {
+    const [date, results] = days[0];
+    const sorted = sortedTeilers(results);
+    return {
+      best: { teiler: sorted[0], date },
+      second: sorted[1] !== undefined ? { teiler: sorted[1], date } : null,
+    };
+  }
+
+  const dayBests: DatedTeiler[] = days
+    .map(([date, results]) => ({ teiler: computeBestTeiler(results), date }))
+    .sort((a, b) => a.teiler - b.teiler || a.date.localeCompare(b.date));
+  return { best: dayBests[0], second: dayBests[1] };
+}
+
 app.get('/api/event', (_req, res) => {
   const data = store.getEventData();
   res.json({
@@ -60,32 +116,37 @@ app.get('/api/event', (_req, res) => {
   });
 });
 
+/**
+ * Baut die Antwort für einen Tag oder alle Tage.
+ * `lookup` liefert die zu wertenden Teiler des Teilnehmers, gruppiert nach Tag.
+ */
 function buildDayResponse(
-  lookup: (p: Participant) => TeilerResult[],
+  lookup: (p: Participant) => Record<string, TeilerResult[]>,
   day: EventDay | null,
 ) {
   const participantsWithResults = store
     .getEventData()
-    .participants.map((p) => ({ p, results: lookup(p) }))
+    .participants.map((p) => {
+      const byDay = lookup(p);
+      return { p, byDay, results: Object.values(byDay).flat() };
+    })
     .filter((entry) => entry.results.length > 0);
 
   const stats: ParticipantStats[] = participantsWithResults
-    .map(({ p, results }) => {
-      const teilers = sortedTeilers(results);
-      const bestTeiler = computeBestTeiler(results);
-      const secondBestTeiler = teilers[1] ?? null;
+    .map(({ p, byDay, results }) => {
+      // results.length > 0 ist oben sichergestellt, daher nie null.
+      const { best, second } = pickBestTwo(byDay)!;
       return {
         id: p.id,
         firstName: p.firstName,
         lastName: p.lastName,
         club: p.club,
         rank: 0,
-        bestTeiler,
-        secondBestTeiler,
-        teilerSum:
-          secondBestTeiler === null
-            ? null
-            : Math.round((bestTeiler + secondBestTeiler) * 100) / 100,
+        bestTeiler: best.teiler,
+        bestTeilerDate: best.date,
+        secondBestTeiler: second?.teiler ?? null,
+        secondBestTeilerDate: second?.date ?? null,
+        teilerSum: second === null ? null : round2(best.teiler + second.teiler),
         teilerCount: results.length,
       };
     })
@@ -123,12 +184,14 @@ app.get('/api/event/days/:date/participants', (req, res) => {
   if (!day) {
     return res.status(404).json({ error: 'Day not found' });
   }
-  res.json(buildDayResponse((p) => p.teilersByDay[date] ?? [], day));
+  res.json(
+    buildDayResponse((p) => ({ [date]: p.teilersByDay[date] ?? [] }), day),
+  );
 });
 
 app.get('/api/event/all/participants', (_req, res) => {
   const allDays: EventDay = { date: 'all', label: 'Alle Tage' };
-  res.json(buildDayResponse(allTeilers, allDays));
+  res.json(buildDayResponse((p) => p.teilersByDay, allDays));
 });
 
 app.get('/api/participants/:id', (req, res) => {
@@ -155,6 +218,36 @@ app.get('/api/participants/:id', (req, res) => {
     };
   }
 
+  // Gesamtwertung nach derselben Regel wie /api/event/all/participants.
+  const overall = pickBestTwo(participant.teilersByDay);
+  const allDaysStats = {
+    ...stats(allTeilers(participant)),
+    bestTeilerDate: overall?.best.date ?? null,
+    secondBestTeiler: overall?.second?.teiler ?? null,
+    secondBestTeilerDate: overall?.second?.date ?? null,
+    teilerSum:
+      overall?.second != null
+        ? round2(overall.best.teiler + overall.second.teiler)
+        : null,
+  };
+
+  // Bestwerte pro Tag (nur Tage mit Werten), chronologisch.
+  const dayLabels = new Map(
+    store.getEventData().days.map((d) => [d.date, d.label] as const),
+  );
+  const days = daysWithResults(participant.teilersByDay).map(
+    ([dayDate, results]) => {
+      const sorted = sortedTeilers(results);
+      return {
+        date: dayDate,
+        label: dayLabels.get(dayDate) ?? dayDate,
+        bestTeiler: sorted[0],
+        secondBestTeiler: sorted[1] ?? null,
+        teilerCount: results.length,
+      };
+    },
+  );
+
   res.json({
     id: participant.id,
     firstName: participant.firstName,
@@ -162,7 +255,8 @@ app.get('/api/participants/:id', (req, res) => {
     club: participant.club,
     selectedDay: date,
     selectedDayStats: stats(dayResults),
-    allDaysStats: stats(allTeilers(participant)),
+    allDaysStats,
+    days,
   });
 });
 

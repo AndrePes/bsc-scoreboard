@@ -70,12 +70,15 @@ Desktop-Bildschirme ausgelegt.
 
 - Überschrift = Label des gewählten Tages (`Alle Tage` bei Gesamtansicht).
 - Drei **Statistik-Karten**: Bester, Zweitbester und Drittbester Teiler des
-  Zeitraums, jeweils mit Name des Schützen. Die erste Karte ist hervorgehoben.
+  Zeitraums (in der Gesamtansicht über alle Tage), jeweils mit Name des
+  Schützen. Die erste Karte ist hervorgehoben.
 - **Rangliste** als Tabelle mit Spalten `#`, `Name / Verein`, `Bester`,
   `2. Teiler`, `Summe`. Unter dem Namen stehen Verein (oder `–`) und
   `<n> Teiler`. Die Reihenfolge entspricht der Server-Sortierung nach
-  `bestTeiler`. Ein Klick auf eine Zeile wählt den Teilnehmer aus
-  (grün hervorgehoben).
+  `bestTeiler`. In der Gesamtansicht gilt die Tagesbestwert-Regel: `Bester`
+  und `2. Teiler` sind bei mehreren Tagen die zwei besten Tagesbestwerte
+  aus verschiedenen Tagen, `Summe` deren Addition. Ein Klick auf eine Zeile
+  wählt den Teilnehmer aus (grün hervorgehoben).
 - Button **Als PDF exportieren** (siehe unten); deaktiviert, wenn keine Daten
   vorliegen, geladen wird oder ein Export läuft.
 
@@ -83,14 +86,25 @@ Desktop-Bildschirme ausgelegt.
 
 Beschreibungsliste des gewählten Teilnehmers:
 
-| Zeile | Quelle |
-| --- | --- |
-| Vorname, Nachname | `firstName`, `lastName` |
-| ID | `id` (MemberId) |
-| Bester Schuss/Teiler (Ausgewählter Tag) | `selectedDayStats.bestTeiler` |
-| Anzahl gewerteter Teiler (Ausgewählter Tag) | `selectedDayStats.teilerCount` |
-| Bester Schuss/Teiler (Alle Tage) | `allDaysStats.bestTeiler` |
-| Anzahl gewerteter Teiler (Alle Tage) | `allDaysStats.teilerCount` |
+| Zeile | Quelle | Hinweis |
+| --- | --- | --- |
+| Vorname, Nachname | `firstName`, `lastName` | |
+| ID | `id` (MemberId) | |
+| Bester Schuss/Teiler (Ausgewählter Tag) | `selectedDayStats.bestTeiler` | nur in der Tagesansicht |
+| Anzahl gewerteter Teiler (Ausgewählter Tag) | `selectedDayStats.teilerCount` | nur in der Tagesansicht |
+| Bester Teiler (Alle Tage) | `allDaysStats.bestTeiler` + `bestTeilerDate` | z. B. `29.9 · 12.09.2026` |
+| 2. Teiler (Alle Tage) | `allDaysStats.secondBestTeiler` + `secondBestTeilerDate` | z. B. `43.9 · 14.09.2026` |
+| Summe (Alle Tage) | `allDaysStats.teilerSum` | |
+| Anzahl gewerteter Teiler (Alle Tage) | `allDaysStats.teilerCount` | |
+
+Darunter folgt der Abschnitt **Bestwerte pro Tag**: eine Zeile pro Tag mit
+Werten (`days[]`), Format `<Bestwert> · <n> Teiler`. Die Tage, aus denen
+bester und zweitbester Teiler der Gesamtwertung stammen, sind grün
+hervorgehoben (bei nur einem Tag ist das ein einzelner Tag).
+
+Die Gesamtwertung folgt der Tagesbestwert-Regel (siehe
+[Architektur](architektur.md#domänenregeln)): bei mehreren Tagen zählt pro
+Tag nur der beste Schuss, Bester und Zweiter stammen aus verschiedenen Tagen.
 
 Der Untertitel lautet `Angaben für <Tag> und alle Tage` bzw.
 `Angaben für alle Tage` in der Gesamtansicht.

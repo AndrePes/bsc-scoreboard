@@ -211,21 +211,33 @@ baut daraus bei Bedarf ein gecachtes `EventData`-Objekt.
 
 ## Berechnung der Ranglisten (`index.ts`)
 
-`buildDayResponse(day, pick)` erzeugt die Antwort für einen Tag oder alle Tage.
-`pick(participant)` liefert die zu wertenden `TeilerResult`-Einträge
-(`teilersByDay[date]` bzw. alle Tage zusammen).
+`buildDayResponse(lookup, day)` erzeugt die Antwort für einen Tag oder alle
+Tage. `lookup(participant)` liefert die zu wertenden `TeilerResult`-Einträge
+**gruppiert nach Tag**: für die Tagesansicht `{ [date]: teilersByDay[date] }`,
+für die Gesamtansicht das vollständige `teilersByDay`.
+
+`pickBestTwo(byDay)` bestimmt daraus besten und zweitbesten Teiler inklusive
+Datum:
+
+| Tage mit Werten | `best` | `second` |
+| --- | --- | --- |
+| 1 | kleinster Wert des Tages | zweitkleinster Wert desselben Tages, sonst `null` |
+| ≥ 2 | kleinster **Tagesbestwert** | zweitkleinster Tagesbestwert (anderer Tag) |
 
 Pro Teilnehmer mit mindestens einem Wert:
 
 | Feld | Berechnung |
 | --- | --- |
-| `bestTeiler` | kleinster Wert |
-| `secondBestTeiler` | zweitkleinster Wert, sonst `null` |
+| `bestTeiler`, `bestTeilerDate` | `pickBestTwo().best` |
+| `secondBestTeiler`, `secondBestTeilerDate` | `pickBestTwo().second`, sonst `null` |
 | `teilerSum` | `round2(best + second)`, sonst `null` |
-| `teilerCount` | Anzahl der Werte |
+| `teilerCount` | Anzahl aller Werte im Zeitraum |
 | `rank` | Position nach Sortierung `bestTeiler` aufsteigend (1-basiert, kein Gleichstand – stabile Sortierung) |
 
 Teilnehmer ohne Wert im gewählten Zeitraum erscheinen nicht in der Liste.
+
+`/api/participants/:id` verwendet `pickBestTwo` ebenfalls für `allDaysStats`
+und liefert zusätzlich `days[]` mit Bestwert, zweitem Wert und Anzahl pro Tag.
 
 `stats.bestTeiler / secondBestTeiler / thirdBestTeiler` sind die drei kleinsten
 Werte **über alle Teilnehmer** inklusive Schützenname – ein Teilnehmer kann

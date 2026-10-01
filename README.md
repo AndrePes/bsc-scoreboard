@@ -178,11 +178,16 @@ Für den Monitor den Browser im Vollbild-/Kiosk-Modus starten, z. B.
 | `GET` | `/api/participants/:id?date=YYYY-MM-DD` | Detailstatistik eines Teilnehmers |
 | `GET` | `/api/health` | Health-Check (inkl. `dataDir`, `todayDir`, `watchDir`, Anzahl geladener Dateien/Teilnehmer) |
 
-Die Teilnehmerlisten enthalten pro Teilnehmer `bestTeiler`, `secondBestTeiler`,
-`teilerSum` (Summe aus bestem und zweitbestem Teiler) und `teilerCount`
-(Anzahl gewerteter Teiler-Werte). Die Top-3-Werte in
-`stats` (`bestTeiler`, `secondBestTeiler`, `thirdBestTeiler`) sind Objekte mit
-`teiler`, `participantId`, `firstName`, `lastName`.
+Die Teilnehmerlisten enthalten pro Teilnehmer `bestTeiler`, `secondBestTeiler`
+(jeweils mit `…Date`), `teilerSum` (Summe aus bestem und zweitbestem Teiler)
+und `teilerCount` (Anzahl gewerteter Teiler-Werte). In der Gesamtansicht
+(`/all/`) gilt die **Tagesbestwert-Regel**: Hat ein Teilnehmer an mehreren
+Tagen geschossen, sind Bester und Zweiter die zwei kleinsten Tagesbestwerte
+(aus verschiedenen Tagen); bei nur einem Tag die zwei besten Schüsse dieses
+Tages. Die Top-3-Werte in `stats` (`bestTeiler`, `secondBestTeiler`,
+`thirdBestTeiler`) sind Objekte mit `teiler`, `participantId`, `firstName`,
+`lastName`. `/api/participants/:id` liefert zusätzlich `allDaysStats` nach
+derselben Regel sowie `days[]` mit den Bestwerten pro Tag.
 
 ## UI-Aufbau
 
@@ -190,4 +195,5 @@ Die Teilnehmerlisten enthalten pro Teilnehmer `bestTeiler`, `secondBestTeiler`,
 2. **Center** – Statistik-Cards (Top-3-Teiler inkl. Name des Schützen) + sortierte Rangliste
    der Teilnehmer (bester Teiler, zweitbester Teiler, Summe). Über der Rangliste kann
    diese als PDF exportiert werden.
-3. **Details** – Description-List mit Werten des ausgewählten Teilnehmers (Tag & Gesamt).
+3. **Details** – Description-List mit Werten des ausgewählten Teilnehmers (Tag & Gesamt,
+   inkl. Datum von bestem und zweitbestem Teiler) sowie Bestwerte pro Tag.
