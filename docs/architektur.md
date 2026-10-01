@@ -140,10 +140,12 @@ Diese Regeln sind an mehreren Stellen im Code verankert und müssen bei
   es gewinnt die Datei mit dem lexikographisch kleineren Pfad.
 - **Namensänderungen:** Bei mehreren Sessions eines Teilnehmers überschreiben
   spätere, nicht-leere Werte für Vor-/Nachname/Verein die früheren.
-- **Sortierung Client vs. Live-Board:** Der Server (und damit der Client)
-  sortiert nach `bestTeiler`; das Live-Board sortiert clientseitig nach
-  `teilerSum` (Summe bester + zweitbester Teiler), Einträge ohne Summe ans
-  Ende, bei Gleichstand nach `bestTeiler`.
+- **Sortierung der Rangliste:** nach `teilerSum` (Summe bester + zweitbester
+  Teiler) aufsteigend, Einträge ohne Summe ans Ende, bei Gleichstand nach
+  `bestTeiler`. Der Server (`compareBySum` in `index.ts`) und das Live-Board
+  (`rankBySum` in `live_board/src/api.ts`, nötig für das clientseitige
+  Zusammenführen mehrerer Tage) verwenden dieselbe Regel; der Client zeigt
+  die Server-Reihenfolge.
 - **Sentinel `'all'`:** Der Client verwendet den String `'all'` als
   `selectedDate` für die Gesamtansicht; der Server liefert dafür
   `day = { date: 'all', label: 'Alle Tage' }`.

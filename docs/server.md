@@ -232,7 +232,7 @@ Pro Teilnehmer mit mindestens einem Wert:
 | `secondBestTeiler`, `secondBestTeilerDate` | `pickBestTwo().second`, sonst `null` |
 | `teilerSum` | `round2(best + second)`, sonst `null` |
 | `teilerCount` | Anzahl aller Werte im Zeitraum |
-| `rank` | Position nach Sortierung `bestTeiler` aufsteigend (1-basiert, kein Gleichstand – stabile Sortierung) |
+| `rank` | Position nach `compareBySum`: `teilerSum` aufsteigend, ohne Summe am Ende, Gleichstand nach `bestTeiler` (1-basiert, kein geteilter Rang – stabile Sortierung) |
 
 Teilnehmer ohne Wert im gewählten Zeitraum erscheinen nicht in der Liste.
 

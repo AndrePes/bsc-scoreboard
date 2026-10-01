@@ -127,15 +127,15 @@ Alle Anfragen verwenden `cache: 'no-store'`.
 
 ### Sortierung nach Summe (`rankBySum`)
 
-Anders als der Client sortiert das Live-Board **nicht** nach dem besten
-Einzel-Teiler, sondern nach `teilerSum` (bester + zweitbester Teiler),
-aufsteigend:
+Das Live-Board sortiert nach `teilerSum` (bester + zweitbester Teiler),
+aufsteigend – dieselbe Regel wie der Server (`compareBySum`), clientseitig
+wiederholt, weil beim Zusammenführen mehrerer Tage neu sortiert werden muss:
 
 1. Einträge ohne Summe (nur ein Teiler) stehen am Ende, untereinander nach
    `bestTeiler`.
 2. Bei gleicher Summe entscheidet `bestTeiler`.
-3. `rank` wird anschließend clientseitig neu von 1 an vergeben und
-   überschreibt den Serverwert.
+3. `rank` wird anschließend clientseitig neu von 1 an vergeben (bei einem
+   Tag oder „alle Tage“ identisch mit dem Serverwert).
 
 ### Zusammenführen mehrerer Tage (`mergeRankings`)
 

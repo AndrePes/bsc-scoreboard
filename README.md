@@ -135,9 +135,10 @@ weitere Anpassungen funktioniert. Der Server-Port wird über die Umgebungsvariab
 Vollbild-Ansicht für Monitore über der Schießbahn. Oberes Drittel: fünf Kacheln
 mit den fünf besten Gesamt-Teilern der Veranstaltung. Unterer Bereich: Tabelle
 aller weiteren Teilnehmer ab Rang 6 mit denselben Werten wie im Client (bester
-Teiler, 2. Teiler, Summe, Anzahl). **Sortierung im Live-Board: Summe aus bestem
-und zweitbestem Teiler, aufsteigend** (kleiner = besser); Teilnehmer mit nur
-einem Teiler stehen am Ende. Die Tabelle zeigt eine feste Zeilenanzahl,
+Teiler, 2. Teiler, Summe, Anzahl). **Sortierung (Client und Live-Board): Summe
+aus bestem und zweitbestem Teiler, aufsteigend** (kleiner = besser);
+Teilnehmer mit nur einem Teiler stehen am Ende, bei Gleichstand entscheidet
+der bessere Einzel-Teiler. Die Tabelle zeigt eine feste Zeilenanzahl,
 scrollt langsam nach unten und springt am Ende wieder an den Anfang. Die Daten
 werden periodisch neu geladen; die Uhrzeit der letzten Aktualisierung steht
 oben rechts.
@@ -192,7 +193,7 @@ derselben Regel sowie `days[]` mit den Bestwerten pro Tag.
 ## UI-Aufbau
 
 1. **Brand Sidebar (Emerald 600)** – Logo, Titel, Liste der Veranstaltungstage.
-2. **Center** – Statistik-Cards (Top-3-Teiler inkl. Name des Schützen) + sortierte Rangliste
+2. **Center** – Statistik-Cards (Top-3-Teiler inkl. Name des Schützen) + nach Summe sortierte Rangliste
    der Teilnehmer (bester Teiler, zweitbester Teiler, Summe). Über der Rangliste kann
    diese als PDF exportiert werden.
 3. **Details** – Description-List mit Werten des ausgewählten Teilnehmers (Tag & Gesamt,

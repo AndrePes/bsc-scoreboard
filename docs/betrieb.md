@@ -250,4 +250,4 @@ Empfehlungen:
 | Vite meldet `http proxy error: /api/event … ECONNREFUSED` | `apiBaseUrl` ist leer, daher geht die Anfrage über den Dev-Proxy an `localhost:4000`, wo kein Server läuft. Entweder `npm run dev:server` starten oder `apiBaseUrl` in `public/config.json` (nicht in `src/config.ts`) auf den Server-Rechner setzen. |
 | Teilnehmer fehlt in der Rangliste | Server-Log auf `übersprungen` prüfen (fehlende `MemberId`, `LastShot`, `Teilers`). |
 | Tag fehlt in der Sidebar | Datum stammt aus `LastShot.TimeStamp`; Uhrzeit/Zeitzone der Anlage prüfen. |
-| Ranglisten von Client und Live-Board unterscheiden sich | Gewollt: Client sortiert nach bestem Teiler, Live-Board nach Summe. |
+| Ranglisten von Client und Live-Board unterscheiden sich | Beide sortieren nach Summe. Unterschiede entstehen nur, wenn das Live-Board über `dates` andere Tage anzeigt als im Client gewählt sind. |

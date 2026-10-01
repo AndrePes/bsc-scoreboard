@@ -107,9 +107,12 @@ anpassen und beide Frontend-Builds prüfen.
 
 ### Sortierung ändern
 
-- Client/Server-Rangliste: `index.ts`, `buildDayResponse` – Sortierfunktion
-  `(a, b) => a.bestTeiler - b.bestTeiler`.
-- Live-Board: `live_board/src/api.ts`, `compareBySum` / `rankBySum`.
+Die Sortierregel existiert zweimal und muss synchron bleiben:
+
+- Server (gilt für den Client): `server/src/index.ts`, `compareBySum`,
+  verwendet in `buildDayResponse`.
+- Live-Board: `live_board/src/api.ts`, `compareBySum` / `rankBySum`
+  (nötig für `mergeRankings`).
 
 ### Server-Port ändern
 

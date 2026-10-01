@@ -39,7 +39,7 @@ interface ParticipantListEntry {
   firstName: string;
   lastName: string;
   club?: string;                       // fehlt, wenn kein Verein hinterlegt
-  rank: number;                        // 1-basiert, nach bestTeiler aufsteigend
+  rank: number;                        // 1-basiert, nach teilerSum aufsteigend
   bestTeiler: number;
   bestTeilerDate: string;              // Tag des besten Teilers (YYYY-MM-DD)
   secondBestTeiler: number | null;     // null bei nur einem Wert
@@ -142,9 +142,11 @@ Tagesstatistik und sortierte Teilnehmerliste für einen Tag.
 Hinweise:
 
 - Nur Teilnehmer mit mindestens einem Teiler an diesem Tag sind enthalten.
-- `participants` ist nach `bestTeiler` aufsteigend sortiert; `rank` entspricht
-  der Position. Bei Gleichstand entscheidet die Reihenfolge des ersten
-  Auftretens (frühester Zeitstempel).
+- `participants` ist nach `teilerSum` aufsteigend sortiert (kleiner = besser);
+  Teilnehmer ohne Summe (nur ein Teiler) stehen am Ende, untereinander nach
+  `bestTeiler`. Bei gleicher Summe entscheidet `bestTeiler`, danach die
+  Reihenfolge des ersten Auftretens (frühester Zeitstempel). `rank`
+  entspricht der Position.
 - Die drei `stats`-Werte sind die drei kleinsten Teiler des Tages über alle
   Teilnehmer; derselbe Schütze kann mehrfach vorkommen.
 

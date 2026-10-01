@@ -74,8 +74,10 @@ Desktop-Bildschirme ausgelegt.
   Schützen. Die erste Karte ist hervorgehoben.
 - **Rangliste** als Tabelle mit Spalten `#`, `Name / Verein`, `Bester`,
   `2. Teiler`, `Summe`. Unter dem Namen stehen Verein (oder `–`) und
-  `<n> Teiler`. Die Reihenfolge entspricht der Server-Sortierung nach
-  `bestTeiler`. In der Gesamtansicht gilt die Tagesbestwert-Regel: `Bester`
+  `<n> Teiler`. Die Reihenfolge entspricht der Server-Sortierung: **Summe
+  aufsteigend** (kleiner = besser), Teilnehmer ohne Summe (nur ein Teiler)
+  am Ende, bei Gleichstand nach bestem Teiler. In der Gesamtansicht gilt die
+  Tagesbestwert-Regel: `Bester`
   und `2. Teiler` sind bei mehreren Tagen die zwei besten Tagesbestwerte
   aus verschiedenen Tagen, `Summe` deren Addition. Ein Klick auf eine Zeile
   wählt den Teilnehmer aus (grün hervorgehoben).

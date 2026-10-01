@@ -64,6 +64,12 @@ auto-scrolling view for range monitors). README and all UI strings are German.
   `computeBestTeiler` returns `Number.POSITIVE_INFINITY` when there are no values.
   Each file contributes only its 3 best Teiler, so `teilerCount` is a count of
   Teiler values, not shots.
+- Ranking order (server `compareBySum` in `index.ts`, mirrored by
+  `live_board/src/api.ts:rankBySum`): `teilerSum` ascending, entries without a
+  sum last, tie-break by `bestTeiler`. "All days" uses the **day-best rule**
+  (`pickBestTwo`): with >= 2 days, best and second are the two smallest
+  per-day bests (different days); with 1 day, best and second shot of that day.
+  List entries carry `bestTeilerDate` / `secondBestTeilerDate`.
 - `GET /api/event/all/participants` aggregates all days. The client uses the
   string `'all'` as a sentinel `selectedDate` for it (`client/src/App.tsx`).
 - Client server address is runtime config: `client/public/config.json`
@@ -73,8 +79,7 @@ auto-scrolling view for range monitors). README and all UI strings are German.
   which only works because each list entry carries best + second-best Teiler),
   `refreshIntervalSec`, `scrollSpeedPxPerSec`, `scrollPauseSec`, `visibleRows`.
   Live-board ranking is re-sorted client-side by `teilerSum` ascending
-  (`rankBySum`; entries without a sum go last), unlike the client which shows the
-  server order by `bestTeiler`. Top 5 of the ranking are tiles, ranks >= 6 go to the auto-scrolling table
+  (`rankBySum`; same order as the server). Top 5 of the ranking are tiles, ranks >= 6 go to the auto-scrolling table
   (`live_board/src/components/AutoScrollTable.tsx`, rAF + translateY, row height
   = viewport / visibleRows).
 - chokidar 5 requires Node >= 20.19.

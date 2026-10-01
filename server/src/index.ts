@@ -19,6 +19,7 @@ interface ParticipantStats {
   firstName: string;
   lastName: string;
   club?: string;
+  /** Position nach Sortierung: teilerSum aufsteigend, ohne Summe am Ende. */
   rank: number;
   bestTeiler: number;
   /** Tag (YYYY-MM-DD), an dem der beste Teiler geschossen wurde. */
@@ -69,6 +70,20 @@ function allTeilers(p: Participant): TeilerResult[] {
 
 function round2(value: number): number {
   return Math.round(value * 100) / 100;
+}
+
+/**
+ * Sortierreihenfolge der Rangliste: Summe aus bestem und zweitbestem Teiler,
+ * aufsteigend (kleiner = besser). Teilnehmer ohne zweiten Teiler (keine Summe)
+ * kommen ans Ende; bei Gleichstand entscheidet der bessere Einzel-Teiler.
+ */
+function compareBySum(a: ParticipantStats, b: ParticipantStats): number {
+  if (a.teilerSum === null && b.teilerSum === null) {
+    return a.bestTeiler - b.bestTeiler;
+  }
+  if (a.teilerSum === null) return 1;
+  if (b.teilerSum === null) return -1;
+  return a.teilerSum - b.teilerSum || a.bestTeiler - b.bestTeiler;
 }
 
 /** Nur die Tage mit mindestens einem Wert, nach Datum sortiert. */
@@ -150,7 +165,7 @@ function buildDayResponse(
         teilerCount: results.length,
       };
     })
-    .sort((a, b) => a.bestTeiler - b.bestTeiler)
+    .sort(compareBySum)
     .map((s, idx) => ({ ...s, rank: idx + 1 }));
 
   // Die drei besten Teiler des Tages über alle Teilnehmer, inkl. Schütze.
