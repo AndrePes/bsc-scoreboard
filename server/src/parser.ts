@@ -11,6 +11,9 @@ import type {
  */
 const METERS_TO_TEILER = 100_000;
 
+/** Pro Durchgang zählen nur die besten zwei Teiler aus allen Gruppen. */
+const BEST_TEILER_COUNT = 2;
+
 function metersToTeiler(meters: number): number {
   return Math.round(meters * METERS_TO_TEILER * 10) / 10;
 }
@@ -53,6 +56,35 @@ function pickParameterResult(
     candidates.find((c) => c.ParameterResultType === 'Bester Teiler') ??
     candidates[0]
   );
+}
+
+function toList(value: unknown): unknown[] {
+  return Array.isArray(value) ? value : value ? [value] : [];
+}
+
+/**
+ * Sammelt alle Teiler (in Metern) aus allen Schuss-Serien:
+ * `Practices[].Groups[].ParameterResults[].Teilers`. Gruppen ohne Teiler
+ * (z. B. Probeserien mit `Teilers: []`) tragen nichts bei.
+ * Gibt `null` zurück, wenn keine Gruppe ein Teiler-Array liefert.
+ */
+function collectGroupTeilers(raw: RawExerciseResultData): number[] | null {
+  let found = false;
+  const all: number[] = [];
+  for (const practice of toList(raw.Practices)) {
+    if (!isObject(practice)) continue;
+    for (const group of toList(practice.Groups)) {
+      if (!isObject(group)) continue;
+      for (const result of toList(group.ParameterResults)) {
+        if (!isObject(result) || !Array.isArray(result.Teilers)) continue;
+        found = true;
+        all.push(...(result.Teilers as unknown[]).filter(
+          (t): t is number => typeof t === 'number',
+        ));
+      }
+    }
+  }
+  return found ? all : null;
 }
 
 /** "2026-09-04T18:43:35.819+02:00" -> "2026-09-04" (lokales Datum der Anlage). */
@@ -108,12 +140,16 @@ export function parseExerciseResult(
   const timestamp = requireString(raw.LastShot.TimeStamp, 'LastShot.TimeStamp');
   const date = dateFromTimestamp(timestamp);
 
-  const parameterResult = pickParameterResult(raw.ParameterResults);
-  const teilers = parameterResult.Teilers.filter(
+  // Alle Teiler aller Gruppen; die zwei besten ergeben sich aus der
+  // aufsteigenden Sortierung. Fallback: Gesamt-`ParameterResults`.
+  const rawTeilers =
+    collectGroupTeilers(raw) ?? pickParameterResult(raw.ParameterResults).Teilers;
+  const teilers = rawTeilers.filter(
     (t): t is number => typeof t === 'number' && Number.isFinite(t) && t >= 0,
   )
     .map(metersToTeiler)
-    .sort((a, b) => a - b);
+    .sort((a, b) => a - b)
+    .slice(0, BEST_TEILER_COUNT);
 
   const id =
     typeof raw.Id === 'string' && raw.Id.trim() !== ''

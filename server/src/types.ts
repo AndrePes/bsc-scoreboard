@@ -33,11 +33,27 @@ export interface RawLastShot {
   ShotNumber?: number;
 }
 
+/** Eine Schuss-Serie (Gruppe, i. d. R. 5 Schuss) innerhalb eines Practice. */
+export interface RawGroup {
+  ParameterResults?: RawParameterResult[] | RawParameterResult | null;
+}
+
+export interface RawPractice {
+  PracticeName?: string;
+  Groups?: RawGroup[] | null;
+}
+
 export interface RawExerciseResultData {
   /** Eindeutige ID des Durchgangs (dient zur Duplikat-Erkennung). */
   Id?: string;
   UserSessionInformation: RawUserSessionInformation;
-  /** In den Exporten ein Array; einzelne Objekte werden ebenfalls akzeptiert. */
+  /** Alle Practices mit ihren Schuss-Serien (Groups). Hauptquelle der Teiler. */
+  Practices?: RawPractice[] | RawPractice | null;
+  /**
+   * Gesamtergebnis der Anlage; nur Fallback, falls `Practices` keine Teiler
+   * enthält. In den Exporten ein Array; einzelne Objekte werden ebenfalls
+   * akzeptiert.
+   */
   ParameterResults?: RawParameterResult[] | RawParameterResult | null;
   LastShot?: RawLastShot | null;
   RangeName?: string;
