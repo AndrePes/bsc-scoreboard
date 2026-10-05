@@ -44,7 +44,6 @@ export function TopFive({ entries }: TopFiveProps) {
               >
                 {p ? `${p.firstName} ${p.lastName}` : '–'}
               </div>
-              <div className="truncate text-sm text-slate-500">
             </div>
 
             <div className="mt-4 flex items-end justify-between gap-3">
