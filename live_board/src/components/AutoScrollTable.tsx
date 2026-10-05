@@ -126,7 +126,7 @@ export function AutoScrollTable({
                   <span className="min-w-0">
                     <span className="block truncate text-3xl font-semibold text-slate-800">
                       {p.firstName} {p.lastName}
-                    </span>
+                    </span>x
                   </span>
                   <span className="text-right text-3xl font-semibold text-slate-800">
                     {formatTeiler(p.bestTeiler)}
