@@ -13,7 +13,7 @@ interface AutoScrollTableProps {
 }
 
 const GRID_COLS =
-  'grid-cols-[5rem_minmax(0,1fr)_10rem_10rem_10rem_7rem]';
+  'grid-cols-[5rem_minmax(0,1fr)_10rem_10rem_10rem]';
 
 type Phase = 'pauseTop' | 'scrolling' | 'pauseBottom';
 
@@ -102,7 +102,6 @@ export function AutoScrollTable({
           <span className="text-right">Bester Teiler</span>
           <span className="text-right">2. Teiler</span>
           <span className="text-right">Summe</span>
-          <span className="text-right">Anzahl</span>
         </div>
 
         <div ref={viewportRef} className="min-h-0 flex-1 overflow-hidden">
@@ -140,9 +139,6 @@ export function AutoScrollTable({
                   </span>
                   <span className="text-right text-3xl font-semibold text-emerald-700">
                     {formatTeiler(p.teilerSum)}
-                  </span>
-                  <span className="text-right text-2xl text-slate-600">
-                    {p.teilerCount}
                   </span>
                 </li>
               ))}
