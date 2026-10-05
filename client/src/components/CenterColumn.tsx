@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api';
-import type { DayParticipantsResponse, TopTeiler } from '../types';
+import type {
+  DayParticipantsResponse,
+  ParticipantListEntry,
+  TopTeiler,
+} from '../types';
 import { StatCard } from './StatCard';
 
 interface CenterColumnProps {
@@ -18,6 +22,26 @@ function formatTeiler(value: number | null | undefined): string {
 function topName(top: TopTeiler | null | undefined): string | null {
   if (!top) return null;
   return `${top.firstName} ${top.lastName}`;
+}
+
+/**
+ * Rangliste nach Teiler-Summe aufsteigend (kleiner = besser). Einträge ohne
+ * Summe kommen ans Ende; bei Gleichstand entscheidet der beste Einzel-Teiler.
+ */
+function compareBySum(a: ParticipantListEntry, b: ParticipantListEntry): number {
+  if (a.teilerSum === null && b.teilerSum === null) {
+    return a.bestTeiler - b.bestTeiler;
+  }
+  if (a.teilerSum === null) return 1;
+  if (b.teilerSum === null) return -1;
+  return a.teilerSum - b.teilerSum || a.bestTeiler - b.bestTeiler;
+}
+
+function rankBySum(res: DayParticipantsResponse): DayParticipantsResponse {
+  const participants = [...res.participants]
+    .sort(compareBySum)
+    .map((p, idx) => ({ ...p, rank: idx + 1 }));
+  return { ...res, participants };
 }
 
 export function CenterColumn({
@@ -58,7 +82,7 @@ export function CenterColumn({
         : api.getDayParticipants(selectedDate);
     request
       .then((res) => {
-        if (!cancelled) setData(res);
+        if (!cancelled) setData(rankBySum(res));
       })
       .catch((err: Error) => {
         if (!cancelled) setError(err.message);
