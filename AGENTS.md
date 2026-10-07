@@ -66,9 +66,9 @@ auto-scrolling view for range monitors). README and all UI strings are German.
   Teiler values, not shots.
 - Ranking order (server `compareBySum` in `index.ts`, mirrored by
   `live_board/src/api.ts:rankBySum`): `teilerSum` ascending, entries without a
-  sum last, tie-break by `bestTeiler`. "All days" uses the **day-best rule**
-  (`pickBestTwo`): with >= 2 days, best and second are the two smallest
-  per-day bests (different days); with 1 day, best and second shot of that day.
+  sum last, tie-break by `bestTeiler`. Best and second are always the
+  **two smallest Teiler over the whole period** (`pickBestTwo`), regardless of
+  day (both may come from the same day).
   List entries carry `bestTeilerDate` / `secondBestTeilerDate`.
 - `GET /api/event/all/participants` aggregates all days. The client uses the
   string `'all'` as a sentinel `selectedDate` for it (`client/src/App.tsx`).

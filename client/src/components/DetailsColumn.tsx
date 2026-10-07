@@ -170,14 +170,18 @@ export function DetailsColumn({
                 <DescriptionList
                   rows={data.days.map((d) => ({
                     label: d.label,
-                    value: `${fmt(d.bestTeiler)} · ${d.teilerCount} Teiler`,
+                    value: `${fmt(d.bestTeiler)}${
+                      d.secondBestTeiler !== null
+                        ? ` / ${fmt(d.secondBestTeiler)}`
+                        : ''
+                    } · ${d.teilerCount} Teiler`,
                     highlight:
                       d.date === data.allDaysStats.bestTeilerDate ||
                       d.date === data.allDaysStats.secondBestTeilerDate,
                   }))}
                 />
                 <p className="mt-2 text-xs text-slate-500">
-                  Hervorgehobene Tage gehen in die Gesamtwertung ein.
+                  Angezeigt: bester / zweitbester Teiler des Tages. Hervorgehobene Tage liefern einen der zwei Werte der Gesamtwertung.
                 </p>
               </div>
             )}

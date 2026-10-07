@@ -68,6 +68,6 @@ eingetragen (z. B. `C:/temp/RangePrinterExport`); den Tagesordner
 | **Durchgang** | Eine Schießserie eines Teilnehmers = eine JSON-Datei der Anlage. Jede Datei liefert die **3 besten Teiler** des Durchgangs. |
 | **Veranstaltungstag** | Wird aus dem Datum von `LastShot.TimeStamp` abgeleitet (nicht aus dem Ordnernamen). Es gibt keine feste Tagesliste. |
 | **Tagesordner** | Ordner `YYYYMMDD` (z. B. `20260929`), den die Anlage pro Tag unter dem Export-Ordner anlegt; die Dateien liegen darunter in `Exercise/raw/`. Der Server überwacht nur den Tagesordner des heutigen Datums. |
-| **Bester / zweitbester Teiler** | Tagesansicht: die beiden kleinsten Teiler des Tages. Gesamtansicht: bei mehreren Tagen die zwei kleinsten **Tagesbestwerte** (aus verschiedenen Tagen), bei einem Tag wie in der Tagesansicht. |
+| **Bester / zweitbester Teiler** | Tagesansicht: die beiden kleinsten Teiler des Tages. Gesamtansicht: die zwei kleinsten Teiler über **alle Tage** (auch beide vom selben Tag möglich). |
 | **Summe (`teilerSum`)** | Bester + zweitbester Teiler. Sortierkriterium im Live-Board. |
 | **Anzahl (`teilerCount`)** | Anzahl gewerteter Teiler-Werte (nicht Schüsse). |

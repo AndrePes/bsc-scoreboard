@@ -22,7 +22,7 @@ export interface ParticipantListEntry {
   bestTeilerDate: string;
   /**
    * Zweitbester Teiler, null bei nur einem Wert. Über mehrere Tage der
-   * zweitbeste Tagesbestwert (anderer Tag als bestTeiler).
+   * zweitkleinste Teiler im gesamten Zeitraum (kann vom selben Tag stammen).
    */
   secondBestTeiler: number | null;
   /** Tag des zweitbesten Teilers, null wenn kein zweiter Wert. */

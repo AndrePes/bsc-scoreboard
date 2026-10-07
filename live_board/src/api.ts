@@ -43,27 +43,37 @@ export function rankBySum(
 
 /**
  * Fasst die Ranglisten mehrerer Tage zu einer Gesamt-Rangliste zusammen –
- * nach derselben Regel wie der Server für "Alle Tage":
+ * nach derselben Regel wie der Server für "Alle Tage": Bester und Zweiter
+ * sind die zwei kleinsten Teiler über den gesamten Zeitraum, unabhängig vom
+ * Tag (auch beide vom selben Tag).
  *
- * - Hat ein Teilnehmer an mehreren Tagen geschossen, zählt pro Tag nur der
- *   Tagesbestwert; Bester und Zweiter sind die zwei kleinsten Tagesbestwerte
- *   (immer von verschiedenen Tagen).
- * - Hat er nur an einem Tag geschossen, gelten bester und zweitbester Schuss
- *   dieses Tages.
+ * Es genügt, pro Tag den besten und zweitbesten Teiler zu betrachten: die
+ * zwei global kleinsten Werte liegen immer unter diesen Kandidaten.
  */
 export function mergeRankings(
   days: DayParticipantsResponse[],
 ): ParticipantListEntry[] {
   const byId = new Map<
     string,
-    { entry: ParticipantListEntry; perDay: ParticipantListEntry[]; count: number }
+    {
+      entry: ParticipantListEntry;
+      candidates: Array<{ teiler: number; date: string }>;
+      count: number;
+    }
   >();
 
   for (const day of days) {
     for (const p of day.participants) {
+      const candidates = [{ teiler: p.bestTeiler, date: p.bestTeilerDate }];
+      if (p.secondBestTeiler !== null) {
+        candidates.push({
+          teiler: p.secondBestTeiler,
+          date: p.secondBestTeilerDate ?? p.bestTeilerDate,
+        });
+      }
       const existing = byId.get(p.id);
       if (existing) {
-        existing.perDay.push(p);
+        existing.candidates.push(...candidates);
         existing.count += p.teilerCount;
         existing.entry = {
           ...existing.entry,
@@ -72,33 +82,18 @@ export function mergeRankings(
           club: p.club ?? existing.entry.club,
         };
       } else {
-        byId.set(p.id, { entry: p, perDay: [p], count: p.teilerCount });
+        byId.set(p.id, { entry: p, candidates, count: p.teilerCount });
       }
     }
   }
 
   return rankBySum(
-    [...byId.values()].map(({ entry, perDay, count }) => {
-      let best: { teiler: number; date: string };
-      let second: { teiler: number; date: string } | null;
-
-      if (perDay.length === 1) {
-        const only = perDay[0];
-        best = { teiler: only.bestTeiler, date: only.bestTeilerDate };
-        second =
-          only.secondBestTeiler === null
-            ? null
-            : {
-                teiler: only.secondBestTeiler,
-                date: only.secondBestTeilerDate ?? only.bestTeilerDate,
-              };
-      } else {
-        const dayBests = perDay
-          .map((d) => ({ teiler: d.bestTeiler, date: d.bestTeilerDate }))
-          .sort((a, b) => a.teiler - b.teiler || a.date.localeCompare(b.date));
-        best = dayBests[0];
-        second = dayBests[1];
-      }
+    [...byId.values()].map(({ entry, candidates, count }) => {
+      const sorted = [...candidates].sort(
+        (a, b) => a.teiler - b.teiler || a.date.localeCompare(b.date),
+      );
+      const best = sorted[0];
+      const second = sorted[1] ?? null;
 
       return {
         ...entry,

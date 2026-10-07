@@ -96,30 +96,16 @@ function daysWithResults(
 }
 
 /**
- * Ermittelt besten und zweitbesten Teiler über die übergebenen Tage.
- *
- * - Genau ein Tag: bester und zweitbester Schuss dieses Tages (Tagesansicht).
- * - Mehrere Tage: pro Tag zählt nur der Tagesbestwert; Bester und Zweiter
- *   sind die zwei kleinsten Tagesbestwerte und stammen damit immer von
- *   verschiedenen Tagen (Gesamtansicht).
+ * Ermittelt besten und zweitbesten Teiler über den gesamten übergebenen
+ * Zeitraum: Es zählen die zwei kleinsten Einzelwerte aller Tage, unabhängig
+ * davon, an welchem Tag sie geschossen wurden (auch beide vom selben Tag).
  */
 function pickBestTwo(byDay: Record<string, TeilerResult[]>): BestTwo | null {
-  const days = daysWithResults(byDay);
-  if (days.length === 0) return null;
-
-  if (days.length === 1) {
-    const [date, results] = days[0];
-    const sorted = sortedTeilers(results);
-    return {
-      best: { teiler: sorted[0], date },
-      second: sorted[1] !== undefined ? { teiler: sorted[1], date } : null,
-    };
-  }
-
-  const dayBests: DatedTeiler[] = days
-    .map(([date, results]) => ({ teiler: computeBestTeiler(results), date }))
+  const all: DatedTeiler[] = daysWithResults(byDay)
+    .flatMap(([date, results]) => results.map((r) => ({ teiler: r.teiler, date })))
     .sort((a, b) => a.teiler - b.teiler || a.date.localeCompare(b.date));
-  return { best: dayBests[0], second: dayBests[1] };
+  if (all.length === 0) return null;
+  return { best: all[0], second: all[1] ?? null };
 }
 
 app.get('/api/event', (_req, res) => {

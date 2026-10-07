@@ -54,12 +54,10 @@ interface ParticipantListEntry {
 | Sicht | `bestTeiler` | `secondBestTeiler` |
 | --- | --- | --- |
 | Ein Tag (`/days/:date/…`) | bester Schuss des Tages | zweitbester Schuss **desselben** Tages |
-| Alle Tage (`/all/…`), Teilnehmer hat an **einem** Tag geschossen | bester Schuss dieses Tages | zweitbester Schuss dieses Tages |
-| Alle Tage, Teilnehmer hat an **mehreren** Tagen geschossen | kleinster **Tagesbestwert** | zweitkleinster Tagesbestwert (immer ein **anderer** Tag) |
+| Alle Tage (`/all/…`) | kleinster Teiler im gesamten Zeitraum | zweitkleinster Teiler im gesamten Zeitraum (kann vom selben Tag stammen) |
 
-Beispiel: Teiler 29.9 und 35.0 am 12.09., 43.9 am 14.09. → Tagesansicht
-12.09.: 29.9 / 35.0 / Summe 64.9; Gesamtansicht: 29.9 (12.09.) / 43.9
-(14.09.) / Summe 73.8.
+Beispiel: Tag 1: 10.0 und 23.5, Tag 2: 25.5 und 19.8 → Gesamtansicht:
+10.0 (Tag 1) / 19.8 (Tag 2) / Summe 29.8.
 
 ```ts
 interface DayStats {
@@ -156,9 +154,8 @@ Hinweise:
 
 Wie der Tages-Endpunkt, jedoch über **alle Tage** aggregiert. `teilerCount`
 und die Top-3-`stats` berücksichtigen alle Teiler aller Tage; `bestTeiler`,
-`secondBestTeiler` und `teilerSum` folgen der Tagesbestwert-Regel (siehe
-oben): bei mehreren Tagen stammen Bester und Zweiter aus **verschiedenen**
-Tagen.
+`secondBestTeiler` und `teilerSum` folgen der Zeitraum-Regel (siehe
+oben): die zwei kleinsten Teiler über alle Tage.
 
 **Antwort `200`** (`DayParticipantsResponse`) mit
 
@@ -217,7 +214,7 @@ interface ParticipantDetail {
     bestTeiler: number | null;
     teilerCount: number;
     bestTeilerDate: string | null;             // Tag des besten Teilers
-    secondBestTeiler: number | null;           // nach Tagesbestwert-Regel
+    secondBestTeiler: number | null;           // zweitkleinster Teiler im Zeitraum
     secondBestTeilerDate: string | null;
     teilerSum: number | null;
   };

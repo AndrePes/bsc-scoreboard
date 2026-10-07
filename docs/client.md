@@ -77,9 +77,9 @@ Desktop-Bildschirme ausgelegt.
   `<n> Teiler`. Die Reihenfolge entspricht der Server-Sortierung: **Summe
   aufsteigend** (kleiner = besser), Teilnehmer ohne Summe (nur ein Teiler)
   am Ende, bei Gleichstand nach bestem Teiler. In der Gesamtansicht gilt die
-  Tagesbestwert-Regel: `Bester`
-  und `2. Teiler` sind bei mehreren Tagen die zwei besten Tagesbestwerte
-  aus verschiedenen Tagen, `Summe` deren Addition. Ein Klick auf eine Zeile
+  Zeitraum-Regel: `Bester`
+  und `2. Teiler` sind die zwei kleinsten Teiler über alle Tage,
+  `Summe` deren Addition. Ein Klick auf eine Zeile
   wählt den Teilnehmer aus (grün hervorgehoben).
 - Button **Als PDF exportieren** (siehe unten); deaktiviert, wenn keine Daten
   vorliegen, geladen wird oder ein Export läuft.
@@ -104,9 +104,10 @@ Werten (`days[]`), Format `<Bestwert> · <n> Teiler`. Die Tage, aus denen
 bester und zweitbester Teiler der Gesamtwertung stammen, sind grün
 hervorgehoben (bei nur einem Tag ist das ein einzelner Tag).
 
-Die Gesamtwertung folgt der Tagesbestwert-Regel (siehe
-[Architektur](architektur.md#domänenregeln)): bei mehreren Tagen zählt pro
-Tag nur der beste Schuss, Bester und Zweiter stammen aus verschiedenen Tagen.
+Die Gesamtwertung folgt der Zeitraum-Regel (siehe
+[Architektur](architektur.md#domänenregeln)): Bester und Zweiter sind die zwei
+kleinsten Teiler über alle Tage. Die Tagesliste zeigt „bester / zweitbester“
+je Tag.
 
 Der Untertitel lautet `Angaben für <Tag> und alle Tage` bzw.
 `Angaben für alle Tage` in der Gesamtansicht.

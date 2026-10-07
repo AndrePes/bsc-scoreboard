@@ -182,10 +182,8 @@ Für den Monitor den Browser im Vollbild-/Kiosk-Modus starten, z. B.
 Die Teilnehmerlisten enthalten pro Teilnehmer `bestTeiler`, `secondBestTeiler`
 (jeweils mit `…Date`), `teilerSum` (Summe aus bestem und zweitbestem Teiler)
 und `teilerCount` (Anzahl gewerteter Teiler-Werte). In der Gesamtansicht
-(`/all/`) gilt die **Tagesbestwert-Regel**: Hat ein Teilnehmer an mehreren
-Tagen geschossen, sind Bester und Zweiter die zwei kleinsten Tagesbestwerte
-(aus verschiedenen Tagen); bei nur einem Tag die zwei besten Schüsse dieses
-Tages. Die Top-3-Werte in `stats` (`bestTeiler`, `secondBestTeiler`,
+(`/all/`) gilt die **Zeitraum-Regel**: Bester und Zweiter sind die zwei
+kleinsten Teiler über alle Tage (auch beide vom selben Tag möglich). Die Top-3-Werte in `stats` (`bestTeiler`, `secondBestTeiler`,
 `thirdBestTeiler`) sind Objekte mit `teiler`, `participantId`, `firstName`,
 `lastName`. `/api/participants/:id` liefert zusätzlich `allDaysStats` nach
 derselben Regel sowie `days[]` mit den Bestwerten pro Tag.

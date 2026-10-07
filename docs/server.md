@@ -219,10 +219,9 @@ für die Gesamtansicht das vollständige `teilersByDay`.
 `pickBestTwo(byDay)` bestimmt daraus besten und zweitbesten Teiler inklusive
 Datum:
 
-| Tage mit Werten | `best` | `second` |
-| --- | --- | --- |
-| 1 | kleinster Wert des Tages | zweitkleinster Wert desselben Tages, sonst `null` |
-| ≥ 2 | kleinster **Tagesbestwert** | zweitkleinster Tagesbestwert (anderer Tag) |
+| `best` | `second` |
+| --- | --- |
+| kleinster Wert im gesamten Zeitraum | zweitkleinster Wert im gesamten Zeitraum (auch vom selben Tag möglich), sonst `null` |
 
 Pro Teilnehmer mit mindestens einem Wert:
 

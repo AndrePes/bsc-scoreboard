@@ -141,20 +141,19 @@ wiederholt, weil beim Zusammenführen mehrerer Tage neu sortiert werden muss:
 
 Für jeden Teilnehmer werden die Tages-Einträge gesammelt, `teilerCount`
 aufsummiert und Name/Verein des späteren Tages übernommen. Bester und
-zweitbester Teiler folgen der **Tagesbestwert-Regel** – identisch zur
+zweitbester Teiler folgen der **Zeitraum-Regel** – identisch zur
 Server-Gesamtansicht (`/api/event/all/participants`), damit Client und
 Live-Board dieselben Werte zeigen:
 
-| Tage, an denen der Teilnehmer geschossen hat | Bester | 2. Teiler |
-| --- | --- | --- |
-| 1 | `bestTeiler` des Tages | `secondBestTeiler` desselben Tages |
-| ≥ 2 | kleinster `bestTeiler` über die Tage | zweitkleinster `bestTeiler` (anderer Tag) |
+Bester und 2. Teiler sind die zwei kleinsten Teiler über alle geladenen Tage,
+unabhängig vom Tag (auch beide vom selben Tag). Beispiel: Tag 1: 10.0 / 23.5,
+Tag 2: 25.5 / 19.8 → 10.0 und 19.8, Summe 29.8.
 
 `bestTeilerDate` / `secondBestTeilerDate` werden entsprechend übernommen,
 `teilerSum` ist die Summe beider Werte; danach `rankBySum`.
 
-Die Regel benötigt pro Tag nur den Tagesbestwert sowie – für den
-Ein-Tages-Fall – den zweitbesten Wert desselben Tages; beides liefert jeder
+Als Kandidaten genügen pro Tag `bestTeiler` und `secondBestTeiler`, da die zwei
+global kleinsten Werte immer darunter liegen; beides liefert jeder
 Listeneintrag der API.
 
 ### Konfigurationsvalidierung (`config.ts`)
